@@ -1,0 +1,18 @@
+# Blueprint Render — tự tạo web service cho QuanLyNhaTro
+# Cách dùng: Render Dashboard → New + → Blueprint → chọn repo này.
+# Sau khi tạo, dán ConnectionStrings__DefaultConnection vào phần Environment của service.
+# (Hoặc cấu hình thủ công theo hướng dẫn trong DEPLOY.md)
+services:
+  - type: web
+    name: quanlynhatro
+    runtime: docker
+    rootDir: QuanLyNhaTro
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      # Dán connection string của Azure SQL vào đây qua Dashboard (đánh dấu Secret),
+      # ví dụ: Server=tcp:tên-server.database.windows.net,1433;Database=QuanLyNhaTroDB;User Id=...;Password=...;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
