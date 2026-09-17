@@ -17,15 +17,7 @@ services.AddDbContext<ApplicationDbContext>(options =>
     if (dbProvider.Equals("sqlite", StringComparison.OrdinalIgnoreCase))
         options.UseSqlite(configuration.GetConnectionString("DemoSqlite"));
     else
-    {
-        // Connection string có thể đặt qua biến môi trường ConnectionStrings__DefaultConnection
-        // (Render/Docker sẽ truyền vào, ghi đè giá trị trong appsettings.json).
-        // EnableRetryOnFailure: tự thử lại khi mất kết nối tạm thời — cần thiết khi dùng
-        // SQL Server trên cloud (Azure SQL / SQL Server trên Render).
-        options.UseSqlServer(
-            configuration.GetConnectionString("DefaultConnection"),
-            sqlOptions => sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null));
-    }
+        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
 
 // Authentication - chỉ một loại người dùng: Chủ trọ
