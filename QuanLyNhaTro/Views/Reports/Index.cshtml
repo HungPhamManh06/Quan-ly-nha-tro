@@ -1,0 +1,59 @@
+@model List<Room>
+@{
+    ViewData["Title"] = "Thống kê & báo cáo";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Thống kê &amp; báo cáo</h3>
+
+<div class="row g-3">
+    @foreach (var (title, icon, action, color, desc) in new List<(string, string, string, string, string)>
+    {
+        ("Báo cáo phòng", "bi-door-open", "Rooms", "primary", "Tổng phòng, trống, đã cọc, đang thuê, sửa chữa"),
+        ("Báo cáo người thuê", "bi-people", "Tenants", "info", "Người đang thuê, người theo phòng"),
+        ("Báo cáo hợp đồng", "bi-file-earmark-text", "Contracts", "secondary", "Hiệu lực, sắp hết hạn, đã thanh lý"),
+        ("Báo cáo hóa đơn", "bi-receipt", "Invoices", "warning", "Danh sách hóa đơn theo kỳ, trạng thái"),
+        ("Doanh thu & công nợ", "bi-cash-stack", "Financial", "success", "Doanh thu/công nợ theo ngày, tháng, năm"),
+        ("Báo cáo điện nước", "bi-lightning-charge", "Utilities", "danger", "Chỉ số, số dùng, tiền theo phòng và tháng")
+    })
+    {
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="@action" class="text-decoration-none">
+                <div class="card stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon bg-@color bg-opacity-10 text-@color me-3"><i class="bi @icon"></i></div>
+                        <div>
+                            <div class="fw-semibold text-dark">@title</div>
+                            <div class="text-muted small">@desc</div>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<div class="card chart-card mt-4">
+    <div class="card-header bg-transparent fw-semibold"><i class="bi bi-download me-2"></i>Xuất dữ liệu (Excel / CSV)</div>
+    <div class="card-body">
+        <div class="row g-2">
+            @foreach (var (type, label) in new List<(string, string)>
+            {
+                ("rooms", "Danh sách phòng"), ("tenants", "Danh sách người thuê"), ("contracts", "Hợp đồng"),
+                ("invoices", "Hóa đơn"), ("revenue", "Doanh thu theo tháng"), ("utilities", "Điện nước")
+            })
+            {
+                <div class="col-md-4 col-sm-6">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Export" asp-route-type="@type" asp-route-format="excel" class="btn btn-outline-success btn-sm flex-fill">
+                            <i class="bi bi-file-earmark-excel me-1"></i>@label (Excel)
+                        </a>
+                        <a asp-action="Export" asp-route-type="@type" asp-route-format="csv" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-filetype-csv"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

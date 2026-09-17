@@ -1,0 +1,45 @@
+@model Service
+@{
+    ViewData["Title"] = "Sửa dịch vụ";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa dịch vụ: @Model.TenDichVu</h3>
+
+<div class="card chart-card">
+    <div class="card-body">
+        <form asp-action="EditService" method="post">
+            <input type="hidden" asp-for="MaDichVu" />
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="TenDichVu" class="form-label"></label>
+                    <input asp-for="TenDichVu" class="form-control" />
+                    <span asp-validation-for="TenDichVu" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DonViTinh" class="form-label"></label>
+                    <input asp-for="DonViTinh" class="form-control" />
+                    <span asp-validation-for="DonViTinh" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DonGia" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="DonGia" class="form-control" type="number" min="0" />
+                        <span class="input-group-text">đ</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Trạng thái</label>
+                    <select asp-for="TrangThai" class="form-select">
+                        <option value="true" selected="@(Model.TrangThai)">Hoạt động</option>
+                        <option value="false" selected="@(!Model.TrangThai)">Ngưng hoạt động</option>
+        </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+@model ServiceUsage
+@{
+    ViewData["Title"] = "Sửa sử dụng dịch vụ";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa sử dụng dịch vụ - @Model.Room?.MaPhongKyHieu - kỳ @Model.KySuDung</h3>
+
+<div class="card chart-card">
+    <div class="card-body">
+        <form asp-action="EditUsage" method="post">
+            <input type="hidden" asp-for="MaSuDung" />
+            <input type="hidden" asp-for="MaPhong" />
+            <input type="hidden" asp-for="MaDichVu" />
+            <input type="hidden" asp-for="KySuDung" />
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="SoLuong" class="form-label"></label>
+                    <input asp-for="SoLuong" class="form-control" type="number" step="0.01" min="0.01" />
+                    <span asp-validation-for="SoLuong" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DonGiaApDung" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="DonGiaApDung" class="form-control" type="number" min="0" />
+                        <span class="input-group-text">đ</span>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="border rounded p-2 w-100 text-center">
+                        <span class="text-muted small">Thành tiền</span>
+                        <div class="fw-bold text-primary" id="thanhTienPreview">0 đ</div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label asp-for="GhiChu" class="form-label"></label>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function recalc() {
+            const sl = parseFloat(document.getElementById('SoLuong')?.value || 0);
+            const dg = parseFloat(document.getElementById('DonGiaApDung')?.value || 0);
+            const el = document.getElementById('thanhTienPreview');
+            if (el) el.textContent = new Intl.NumberFormat('vi-VN').format(sl * dg) + ' đ';
+        }
+        ['SoLuong', 'DonGiaApDung'].forEach(function (id) {
+            document.getElementById(id)?.addEventListener('input', recalc);
+        });
+    </script>
+}

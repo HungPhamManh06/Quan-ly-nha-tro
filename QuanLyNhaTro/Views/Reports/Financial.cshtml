@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Doanh thu & công nợ";
+    var fin = (ReportFinancialViewModel)ViewBag.Financial;
+    var doanhThuThang = (List<DoanhThuThangItem>)ViewBag.DoanhThuThang;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="fw-bold mb-0"><i class="bi bi-cash-stack me-2 text-success"></i>Doanh thu &amp; công nợ</h3>
+    <div>
+        <a asp-action="Export" asp-route-type="revenue" asp-route-format="excel" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+        <a asp-action="Index" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Menu báo cáo</a>
+    </div>
+</div>
+
+<div class="card chart-card mb-3">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Từ kỳ</label>
+                <input type="month" name="tuKy" value="@ViewBag.TuKy" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Đến kỳ</label>
+                <input type="month" name="denKy" value="@ViewBag.DenKy" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Năm (biểu đồ)</label>
+                <input type="number" name="nam" value="@ViewBag.Nam" class="form-control" min="2000" max="2100" />
+            </div>
+            <div class="col-md-2"><button class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Lọc</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-3"><div class="card stat-card p-3"><div class="text-muted small">Tổng doanh thu (đã thu)</div><div class="fs-4 fw-bold text-success">@fin.TongDoanhThu.ToString("N0") đ</div><div class="text-muted small">@fin.SoHoaDonDaTT hóa đơn</div></div></div>
+    <div class="col-md-3"><div class="card stat-card p-3"><div class="text-muted small">Tổng công nợ (chưa thu)</div><div class="fs-4 fw-bold text-danger">@fin.TongCongNo.ToString("N0") đ</div><div class="text-muted small">@fin.SoHoaDonChuaTT hóa đơn</div></div></div>
+</div>
+
+<div class="card chart-card mb-3">
+    <div class="card-header bg-transparent fw-semibold">Doanh thu - công nợ theo tháng năm @ViewBag.Nam</div>
+    <div class="card-body">
+        <div class="chart-box"><canvas id="financeChart"></canvas></div>
+    </div>
+</div>
+
+<div class="card chart-card">
+    <div class="table-responsive">
+        <table class="table table-hover table-sm mb-0">
+            <thead><tr><th>Tháng</th><th class="text-end">Doanh thu (đã thanh toán)</th><th class="text-end">Công nợ (chưa thanh toán)</th></tr></thead>
+            <tbody>
+                @foreach (var d in doanhThuThang)
+                {
+                    <tr>
+                        <td>@d.Thang</td>
+                        <td class="text-end text-success">@d.DoanhThu.ToString("N0")</td>
+                        <td class="text-end text-danger">@d.CongNo.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        new Chart(document.getElementById('financeChart'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(doanhThuThang.Select(d => d.Thang))),
+                datasets: [
+                    { label: 'Doanh thu', data: @Html.Raw(Json.Serialize(doanhThuThang.Select(d => d.DoanhThu))), backgroundColor: '#198754' },
+                    { label: 'Công nợ', data: @Html.Raw(Json.Serialize(doanhThuThang.Select(d => d.CongNo))), backgroundColor: '#dc3545' }
+                ]
+            },
+            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+}

@@ -1,0 +1,91 @@
+@model Contract
+@{
+    ViewData["Title"] = "Chi tiết hợp đồng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="fw-bold mb-0"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Hợp đồng @Model.MaHopDongKyHieu</h3>
+    <div>
+        @if (Model.TrangThai != ContractStatus.DaThanhLy)
+        {
+            <a asp-action="Renew" asp-route-id="@Model.MaHopDong" class="btn btn-outline-primary"><i class="bi bi-arrow-repeat me-1"></i>Gia hạn</a>
+            <a asp-controller="MoveOut" asp-action="Settle" asp-route-id="@Model.MaHopDong" class="btn btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Trả phòng</a>
+        }
+        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Danh sách</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold">Thông tin hợp đồng</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-4">Mã hợp đồng</dt><dd class="col-8">@Model.MaHopDongKyHieu</dd>
+                    <dt class="col-4">Phòng</dt>
+                    <dd class="col-8"><a asp-controller="Rooms" asp-action="Details" asp-route-id="@Model.MaPhong">@Model.Room?.MaPhongKyHieu - @Model.Room?.TenPhong</a></dd>
+                    <dt class="col-4">Người thuê</dt>
+                    <dd class="col-8"><a asp-controller="Tenants" asp-action="Details" asp-route-id="@Model.MaNguoiThue">@Model.Tenant?.HoTen</a> (CCCD: @Model.Tenant?.CCCD)</dd>
+                    <dt class="col-4">Ngày bắt đầu</dt><dd class="col-8">@Model.NgayBatDau.ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-4">Ngày kết thúc</dt><dd class="col-8">@Model.NgayKetThuc.ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-4">Giá thuê</dt><dd class="col-8 fw-semibold">@Model.GiaThue.ToString("N0") đ/tháng</dd>
+                    <dt class="col-4">Tiền cọc</dt><dd class="col-8 fw-semibold">@Model.TienCoc.ToString("N0") đ</dd>
+                    <dt class="col-4">Trạng thái</dt><dd class="col-8"><span class="badge @(Model.TrangThai == ContractStatus.DaThanhLy ? "badge-dathanhly" : "badge-hieuluc")">@Model.TrangThai.GetDisplayName()</span></dd>
+                    <dt class="col-4">Ghi chú</dt><dd class="col-8">@(Model.GhiChu ?? "-")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-clock-history me-2"></i>Lịch sử hợp đồng (@Model.Histories.Count)</div>
+            <div class="card-body">
+                @if (Model.Histories.Any())
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var h in Model.Histories.OrderByDescending(h => h.ThoiGian))
+                        {
+                            <li class="mb-2 pb-2 border-bottom">
+                                <span class="badge bg-light text-dark border">@h.HanhDong</span>
+                                <small class="text-muted float-end">@h.ThoiGian.ToString("dd/MM/yyyy HH:mm")</small>
+                                <div class="small mt-1">@h.NoiDung</div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Chưa có lịch sử.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card chart-card">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-receipt me-2"></i>Hóa đơn theo hợp đồng (@Model.Invoices.Count)</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Mã HĐ</th><th>Kỳ</th><th>Tiền phòng</th><th>Điện</th><th>Nước</th><th>DV</th><th>Tổng</th><th>Trạng thái</th></tr></thead>
+                    <tbody>
+                        @foreach (var inv in Model.Invoices.OrderByDescending(i => i.KyHoaDon))
+                        {
+                            <tr>
+                                <td><a asp-controller="Invoices" asp-action="Details" asp-route-id="@inv.MaHoaDon">@inv.MaHoaDonKyHieu</a></td>
+                                <td>@inv.KyHoaDon</td>
+                                <td>@inv.TienPhong.ToString("N0")</td>
+                                <td>@inv.TienDien.ToString("N0")</td>
+                                <td>@inv.TienNuoc.ToString("N0")</td>
+                                <td>@inv.TienDichVu.ToString("N0")</td>
+                                <td class="fw-semibold">@inv.TongTien.ToString("N0")</td>
+                                <td><span class="badge @(inv.TrangThaiThanhToan == InvoicePaymentStatus.DaThanhToan ? "badge-dathanhtoan" : "badge-chuathanhtoan")">@inv.TrangThaiThanhToan.GetDisplayName()</span></td>
+                            </tr>
+                        }
+                        @if (!Model.Invoices.Any()) { <tr><td colspan="8" class="text-muted text-center py-3">Chưa có hóa đơn.</td></tr> }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

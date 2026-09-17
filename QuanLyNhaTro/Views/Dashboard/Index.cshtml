@@ -1,0 +1,204 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Tổng quan";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Tổng quan</h3>
+    <span class="text-muted">@DateTime.Now.ToString("dddd, dd/MM/yyyy")</span>
+</div>
+
+<!-- Thẻ thống kê -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-primary bg-opacity-10 text-primary me-3"><i class="bi bi-door-open"></i></div>
+                <div>
+                    <div class="text-muted small">Tổng số phòng</div>
+                    <div class="fs-4 fw-bold">@Model.TongSoPhong</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-success bg-opacity-10 text-success me-3"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="text-muted small">Doanh thu (đã thu)</div>
+                    <div class="fs-5 fw-bold">@Model.DoanhThu.ToString("N0") đ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-danger bg-opacity-10 text-danger me-3"><i class="bi bi-exclamation-circle"></i></div>
+                <div>
+                    <div class="text-muted small">Công nợ (chưa thu)</div>
+                    <div class="fs-5 fw-bold">@Model.CongNo.ToString("N0") đ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-warning bg-opacity-10 text-warning me-3"><i class="bi bi-people"></i></div>
+                <div>
+                    <div class="text-muted small">Người thuê đang ở</div>
+                    <div class="fs-4 fw-bold">@Model.NguoiThueDangO</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-info bg-opacity-10 text-info me-3"><i class="bi bi-receipt"></i></div>
+                <div>
+                    <div class="text-muted small">Hóa đơn chưa thanh toán</div>
+                    <div class="fs-4 fw-bold">@Model.HoaDonChuaThanhToan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-success bg-opacity-10 text-success me-3"><i class="bi bi-receipt-cutoff"></i></div>
+                <div>
+                    <div class="text-muted small">Hóa đơn đã thanh toán</div>
+                    <div class="fs-4 fw-bold">@Model.HoaDonDaThanhToan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-secondary bg-opacity-10 text-secondary me-3"><i class="bi bi-file-earmark-text"></i></div>
+                <div>
+                    <div class="text-muted small">Hợp đồng hiệu lực</div>
+                    <div class="fs-4 fw-bold">@Model.HopDongHieuLuc</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon bg-danger bg-opacity-10 text-danger me-3"><i class="bi bi-hourglass-split"></i></div>
+                <div>
+                    <div class="text-muted small">Hợp đồng sắp hết hạn</div>
+                    <div class="fs-4 fw-bold">@Model.HopDongSapHetHan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chi tiết trạng thái phòng -->
+<div class="row g-3 mb-4">
+    <div class="col-md-12">
+        <div class="card chart-card">
+            <div class="card-body d-flex flex-wrap gap-3 align-items-center">
+                <span class="fw-semibold me-2"><i class="bi bi-door-closed me-1"></i>Trạng thái phòng:</span>
+                <a asp-controller="Rooms" asp-action="Index" class="badge badge-trong p-2 text-decoration-none">Trống: @Model.PhongTrong</a>
+                <a asp-controller="Rooms" asp-action="Index" class="badge badge-dacoc p-2 text-decoration-none">Đã cọc: @Model.PhongDaCoc</a>
+                <a asp-controller="Rooms" asp-action="Index" class="badge badge-dangthue p-2 text-decoration-none">Đang thuê: @Model.PhongDangThue</a>
+                <a asp-controller="Rooms" asp-action="Index" class="badge badge-dangsua p-2 text-decoration-none">Đang sửa chữa: @Model.PhongDangSuaChua</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Biểu đồ -->
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-pie-chart me-2 text-primary"></i>Trạng thái phòng</div>
+            <div class="card-body">
+                <div class="chart-box"><canvas id="roomStatusChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-graph-up me-2 text-primary"></i>Doanh thu theo tháng (12 tháng gần nhất)</div>
+            <div class="card-body">
+                <div class="chart-box"><canvas id="revenueChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-graph-down me-2 text-danger"></i>Công nợ theo tháng</div>
+            <div class="card-body">
+                <div class="chart-box"><canvas id="debtChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-lightning-charge me-2 text-warning"></i>Điện - nước theo tháng</div>
+            <div class="card-body">
+                <div class="chart-box"><canvas id="utilityChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        const thangs = @Html.Raw(Json.Serialize(Model.Thangs));
+        const roomChart = @Html.Raw(Json.Serialize(Model.TrangThaiPhongChart.Select(c => new { c.Label, c.GiaTri1 })));
+        const doanhThu = @Html.Raw(Json.Serialize(Model.DoanhThuChart.Select(c => c.GiaTri1)));
+        const congNo = @Html.Raw(Json.Serialize(Model.CongNoChart.Select(c => c.GiaTri1)));
+        const dien = @Html.Raw(Json.Serialize(Model.DienNuocChart.Select(c => c.GiaTri1)));
+        const nuoc = @Html.Raw(Json.Serialize(Model.DienNuocChart.Select(c => c.GiaTri2)));
+
+        // Trạng thái phòng
+        new Chart(document.getElementById('roomStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: roomChart.map(c => c.label),
+                datasets: [{ data: roomChart.map(c => c.giaTri1), backgroundColor: ['#198754', '#0d6efd', '#ffc107', '#dc3545'] }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Doanh thu theo tháng
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: { labels: thangs, datasets: [{ label: 'Doanh thu (đ)', data: doanhThu, backgroundColor: '#0d6efd' }] },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Công nợ theo tháng
+        new Chart(document.getElementById('debtChart'), {
+            type: 'line',
+            data: { labels: thangs, datasets: [{ label: 'Công nợ (đ)', data: congNo, borderColor: '#dc3545', backgroundColor: 'rgba(220,53,69,.15)', fill: true, tension: .3 }] },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Điện nước theo tháng
+        new Chart(document.getElementById('utilityChart'), {
+            type: 'bar',
+            data: {
+                labels: thangs,
+                datasets: [
+                    { label: 'Số điện (kW)', data: dien, backgroundColor: '#ffc107' },
+                    { label: 'Số nước (m³)', data: nuoc, backgroundColor: '#0dcaf0' }
+                ]
+            },
+            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+}

@@ -1,0 +1,57 @@
+@model List<UtilityReportItem>
+@{
+    ViewData["Title"] = "Báo cáo điện nước";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="fw-bold mb-0"><i class="bi bi-lightning-charge me-2 text-danger"></i>Báo cáo điện nước</h3>
+    <div>
+        <a asp-action="Export" asp-route-type="utilities" asp-route-format="excel" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+        <a asp-action="Index" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Menu báo cáo</a>
+    </div>
+</div>
+
+<div class="card chart-card mb-3">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Từ kỳ</label>
+                <input type="month" name="tuKy" value="@ViewContext.HttpContext.Request.Query["tuKy"]" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Đến kỳ</label>
+                <input type="month" name="denKy" value="@ViewContext.HttpContext.Request.Query["denKy"]" class="form-control" />
+            </div>
+            <div class="col-md-2"><button class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Lọc</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="card chart-card">
+    <div class="table-responsive">
+        <table class="table table-hover table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Kỳ</th><th>Phòng</th>
+                    <th class="text-end">Điện cũ → mới</th><th class="text-end">Số dùng</th><th class="text-end">Tiền điện</th>
+                    <th class="text-end">Nước cũ → mới</th><th class="text-end">Số dùng</th><th class="text-end">Tiền nước</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.KyGhi</td><td>@u.MaPhong</td>
+                        <td class="text-end small">@u.ChiSoDienCu.ToString("N0") → @u.ChiSoDienMoi.ToString("N0")</td>
+                        <td class="text-end">@u.SoDienSuDung.ToString("N0")</td>
+                        <td class="text-end">@u.TienDien.ToString("N0")</td>
+                        <td class="text-end small">@u.ChiSoNuocCu.ToString("N0") → @u.ChiSoNuocMoi.ToString("N0")</td>
+                        <td class="text-end">@u.SoNuocSuDung.ToString("N0")</td>
+                        <td class="text-end">@u.TienNuoc.ToString("N0")</td>
+                    </tr>
+                }
+                @if (!Model.Any()) { <tr><td colspan="8" class="text-center text-muted py-4">Chưa có dữ liệu.</td></tr> }
+            </tbody>
+        </table>
+    </div>
+</div>

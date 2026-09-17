@@ -1,0 +1,97 @@
+@model PaymentViewModel
+@{
+    ViewData["Title"] = "Thanh toán hóa đơn";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-cash-coin me-2 text-success"></i>Thanh toán hóa đơn</h3>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card chart-card mb-3">
+            <div class="card-header bg-transparent fw-semibold">Thông tin hóa đơn</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5">Mã hóa đơn</dt><dd class="col-7">@Model.MaHoaDonKyHieu</dd>
+                    <dt class="col-5">Phòng</dt><dd class="col-7">@Model.TenPhong</dd>
+                    <dt class="col-5">Kỳ</dt><dd class="col-7">@Model.KyHoaDon</dd>
+                    <dt class="col-5">Tổng tiền</dt><dd class="col-7 fw-bold text-danger fs-5">@Model.TongTien.ToString("N0") đ</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card chart-card">
+            <div class="card-body">
+                <form asp-action="Pay" method="post" id="payForm" data-confirm="Xác nhận ghi nhận thanh toán hóa đơn @Model.MaHoaDonKyHieu?">
+                    <input type="hidden" asp-for="MaHoaDon" />
+                    <input type="hidden" asp-for="MaHoaDonKyHieu" />
+                    <input type="hidden" asp-for="TenPhong" />
+                    <input type="hidden" asp-for="KyHoaDon" />
+                    <input type="hidden" asp-for="TongTien" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="SoTien" class="form-label">Số tiền khách trả (đ)</label>
+                            <input asp-for="SoTien" class="form-control" type="number" min="0" id="soTienInput" />
+                            <span asp-validation-for="SoTien" class="text-danger small"></span>
+                            <div class="form-text" id="soTienHint"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhuongThuc" class="form-label"></label>
+                            <select asp-for="PhuongThuc" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="NgayThanhToan" class="form-label"></label>
+                            <input asp-for="NgayThanhToan" class="form-control" type="date" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="GhiChu" class="form-label"></label>
+                            <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-1"></i>Ghi nhận thanh toán</button>
+                        <a asp-controller="Invoices" asp-action="Details" asp-route-id="@Model.MaHoaDon" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card chart-card">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-info-circle me-2"></i>Quy tắc thanh toán</div>
+            <div class="card-body small">
+                <ul class="mb-0">
+                    <li>Mỗi hóa đơn chỉ được thanh toán <b>một lần duy nhất</b>.</li>
+                    <li><b>Trả thiếu</b>: không chấp nhận, không tạo thanh toán, hóa đơn vẫn <span class="badge badge-chuathanhtoan">Chưa thanh toán</span>.</li>
+                    <li><b>Trả đủ</b>: tạo thanh toán, hóa đơn chuyển <span class="badge badge-dathanhtoan">Đã thanh toán</span>.</li>
+                    <li><b>Trả thừa</b>: ghi nhận đúng tổng tiền hóa đơn, phần thừa hoàn lại cho khách.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const tongTien = @Model.TongTien;
+        const input = document.getElementById('soTienInput');
+        const hint = document.getElementById('soTienHint');
+        function updateHint() {
+            const v = parseFloat(input?.value || 0);
+            if (!hint) return;
+            if (v < tongTien) {
+                hint.className = 'form-text text-danger';
+                hint.textContent = '⚠ Chưa đủ! Còn thiếu ' + new Intl.NumberFormat('vi-VN').format(tongTien - v) + ' đ. Hệ thống sẽ KHÔNG chấp nhận thanh toán.';
+            } else if (v > tongTien) {
+                hint.className = 'form-text text-info';
+                hint.textContent = 'ℹ Trả thừa ' + new Intl.NumberFormat('vi-VN').format(v - tongTien) + ' đ — phần thừa sẽ được hoàn lại, chỉ ghi nhận ' + new Intl.NumberFormat('vi-VN').format(tongTien) + ' đ.';
+            } else {
+                hint.className = 'form-text text-success';
+                hint.textContent = '✓ Đủ tiền, có thể ghi nhận thanh toán.';
+            }
+        }
+        input?.addEventListener('input', updateHint);
+        updateHint();
+    </script>
+}

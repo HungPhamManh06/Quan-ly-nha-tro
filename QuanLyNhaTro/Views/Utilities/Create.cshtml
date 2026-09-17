@@ -1,0 +1,111 @@
+@model UtilityReading
+@{
+    ViewData["Title"] = "Ghi chỉ số điện nước";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-plus-circle me-2 text-primary"></i>Ghi chỉ số điện nước</h3>
+
+<div class="card chart-card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="MaPhong" class="form-label"></label>
+                    <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.Rooms" id="roomSelect">
+                        <option value="">-- Chọn phòng --</option>
+                    </select>
+                    <span asp-validation-for="MaPhong" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="KyGhi" class="form-label"></label>
+                    <input asp-for="KyGhi" class="form-control" type="month" />
+                    <span asp-validation-for="KyGhi" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="text-primary"><i class="bi bi-lightning-charge me-1"></i>Điện</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label asp-for="ChiSoDienCu" class="form-label small"></label>
+                                <input asp-for="ChiSoDienCu" class="form-control" type="number" step="0.01" min="0" />
+                            </div>
+                            <div class="col-6">
+                                <label asp-for="ChiSoDienMoi" class="form-label small"></label>
+                                <input asp-for="ChiSoDienMoi" class="form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="ChiSoDienMoi" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="DonGiaDien" class="form-label small"></label>
+                                <div class="input-group">
+                                    <input asp-for="DonGiaDien" class="form-control" type="number" min="0" />
+                                    <span class="input-group-text">đ/kW</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="text-info"><i class="bi bi-droplet me-1"></i>Nước</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label asp-for="ChiSoNuocCu" class="form-label small"></label>
+                                <input asp-for="ChiSoNuocCu" class="form-control" type="number" step="0.01" min="0" />
+                            </div>
+                            <div class="col-6">
+                                <label asp-for="ChiSoNuocMoi" class="form-label small"></label>
+                                <input asp-for="ChiSoNuocMoi" class="form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="ChiSoNuocMoi" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="DonGiaNuoc" class="form-label small"></label>
+                                <div class="input-group">
+                                    <input asp-for="DonGiaNuoc" class="form-control" type="number" min="0" />
+                                    <span class="input-group-text">đ/m³</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label asp-for="GhiChu" class="form-label"></label>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="alert alert-info small mt-3 mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                Chỉ số mới phải lớn hơn hoặc bằng chỉ số cũ. Mỗi phòng + kỳ chỉ được ghi một bản ghi.
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Lưu chỉ số</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Tự tính tiền khi nhập (preview phía client, server vẫn tính lại)
+        function recalc() {
+            const dCu = parseFloat(document.getElementById('ChiSoDienCu')?.value || 0);
+            const dMoi = parseFloat(document.getElementById('ChiSoDienMoi')?.value || 0);
+            const dGia = parseFloat(document.getElementById('DonGiaDien')?.value || 0);
+            const nCu = parseFloat(document.getElementById('ChiSoNuocCu')?.value || 0);
+            const nMoi = parseFloat(document.getElementById('ChiSoNuocMoi')?.value || 0);
+            const nGia = parseFloat(document.getElementById('DonGiaNuoc')?.value || 0);
+            if (dMoi >= dCu) {
+                const el = document.getElementById('tienDienPreview');
+                if (el) el.textContent = new Intl.NumberFormat('vi-VN').format((dMoi - dCu) * dGia) + ' đ';
+            }
+            if (nMoi >= nCu) {
+                const el = document.getElementById('tienNuocPreview');
+                if (el) el.textContent = new Intl.NumberFormat('vi-VN').format((nMoi - nCu) * nGia) + ' đ';
+            }
+        }
+        ['ChiSoDienCu','ChiSoDienMoi','DonGiaDien','ChiSoNuocCu','ChiSoNuocMoi','DonGiaNuoc'].forEach(function (id) {
+            document.getElementById(id)?.addEventListener('input', recalc);
+        });
+    </script>
+}

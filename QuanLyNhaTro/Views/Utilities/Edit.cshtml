@@ -1,0 +1,73 @@
+@model UtilityReading
+@{
+    ViewData["Title"] = "Sửa chỉ số điện nước";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa chỉ số - phòng @Model.Room?.MaPhongKyHieu - kỳ @Model.KyGhi</h3>
+
+<div class="card chart-card">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="MaGhiChiSo" />
+            <input type="hidden" asp-for="MaPhong" />
+            <input type="hidden" asp-for="KyGhi" />
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="text-primary"><i class="bi bi-lightning-charge me-1"></i>Điện</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label asp-for="ChiSoDienCu" class="form-label small"></label>
+                                <input asp-for="ChiSoDienCu" class="form-control" type="number" step="0.01" min="0" />
+                            </div>
+                            <div class="col-6">
+                                <label asp-for="ChiSoDienMoi" class="form-label small"></label>
+                                <input asp-for="ChiSoDienMoi" class="form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="ChiSoDienMoi" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="DonGiaDien" class="form-label small"></label>
+                                <div class="input-group">
+                                    <input asp-for="DonGiaDien" class="form-control" type="number" min="0" />
+                                    <span class="input-group-text">đ/kW</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="text-info"><i class="bi bi-droplet me-1"></i>Nước</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label asp-for="ChiSoNuocCu" class="form-label small"></label>
+                                <input asp-for="ChiSoNuocCu" class="form-control" type="number" step="0.01" min="0" />
+                            </div>
+                            <div class="col-6">
+                                <label asp-for="ChiSoNuocMoi" class="form-label small"></label>
+                                <input asp-for="ChiSoNuocMoi" class="form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="ChiSoNuocMoi" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="DonGiaNuoc" class="form-label small"></label>
+                                <div class="input-group">
+                                    <input asp-for="DonGiaNuoc" class="form-control" type="number" min="0" />
+                                    <span class="input-group-text">đ/m³</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label asp-for="GhiChu" class="form-label"></label>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>

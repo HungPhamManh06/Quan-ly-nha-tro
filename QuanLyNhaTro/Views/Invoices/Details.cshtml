@@ -1,0 +1,90 @@
+@model Invoice
+@{
+    ViewData["Title"] = "Chi tiết hóa đơn";
+    var daTT = Model.TrangThaiThanhToan == InvoicePaymentStatus.DaThanhToan;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="fw-bold mb-0"><i class="bi bi-receipt me-2 text-primary"></i>Hóa đơn @Model.MaHoaDonKyHieu</h3>
+    <div>
+        @if (!daTT)
+        {
+            <a asp-controller="Payments" asp-action="Pay" asp-route-id="@Model.MaHoaDon" class="btn btn-success"><i class="bi bi-cash-coin me-1"></i>Thanh toán</a>
+        }
+        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Danh sách</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card chart-card h-100">
+            <div class="card-header bg-transparent fw-semibold d-flex">
+                <span>Chi tiết hóa đơn</span>
+                <span class="ms-auto"><span class="badge @(daTT ? "badge-dathanhtoan" : "badge-chuathanhtoan")">@Model.TrangThaiThanhToan.GetDisplayName()</span></span>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-4">Mã hóa đơn</dt><dd class="col-8">@Model.MaHoaDonKyHieu</dd>
+                    <dt class="col-4">Phòng</dt>
+                    <dd class="col-8"><a asp-controller="Rooms" asp-action="Details" asp-route-id="@Model.MaPhong">@Model.Room?.MaPhongKyHieu - @Model.Room?.TenPhong</a></dd>
+                    <dt class="col-4">Kỳ hóa đơn</dt><dd class="col-8">@Model.KyHoaDon</dd>
+                    <dt class="col-4">Ngày lập</dt><dd class="col-8">@Model.NgayLap.ToString("dd/MM/yyyy HH:mm")</dd>
+                    <dt class="col-4">Hạn thanh toán</dt><dd class="col-8">@(Model.HanThanhToan?.ToString("dd/MM/yyyy") ?? "-")</dd>
+                    <dt class="col-4">Ghi chú</dt><dd class="col-8">@(Model.GhiChu ?? "-")</dd>
+                </dl>
+
+                <table class="table table-sm mt-3">
+                    <thead><tr><th>Khoản mục</th><th class="text-end">Thành tiền (đ)</th></tr></thead>
+                    <tbody>
+                        <tr><td>Tiền phòng</td><td class="text-end">@Model.TienPhong.ToString("N0")</td></tr>
+                        <tr><td>Tiền điện</td><td class="text-end">@Model.TienDien.ToString("N0")</td></tr>
+                        <tr><td>Tiền nước</td><td class="text-end">@Model.TienNuoc.ToString("N0")</td></tr>
+                        <tr><td>Tiền dịch vụ</td><td class="text-end">@Model.TienDichVu.ToString("N0")</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-light fw-bold">
+                            <td>TỔNG TIỀN</td>
+                            <td class="text-end">@Model.TongTien.ToString("N0")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card chart-card mb-3">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-cash-coin me-2 text-success"></i>Thanh toán</div>
+            <div class="card-body">
+                @if (Model.Payment != null)
+                {
+                    <dl class="row mb-0">
+                        <dt class="col-5">Số tiền</dt><dd class="col-7 fw-semibold">@Model.Payment.SoTien.ToString("N0") đ</dd>
+                        <dt class="col-5">Ngày thanh toán</dt><dd class="col-7">@Model.Payment.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</dd>
+                        <dt class="col-5">Phương thức</dt><dd class="col-7">@Model.Payment.PhuongThuc.GetDisplayName()</dd>
+                        <dt class="col-5">Ghi chú</dt><dd class="col-7">@(Model.Payment.GhiChu ?? "-")</dd>
+                    </dl>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Hóa đơn chưa được thanh toán.</p>
+                }
+            </div>
+        </div>
+
+        <div class="card chart-card">
+            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-person me-2"></i>Người thuê theo hợp đồng</div>
+            <div class="card-body">
+                @if (Model.Contract?.Tenant != null)
+                {
+                    <div>@Model.Contract.Tenant.HoTen — CCCD: @Model.Contract.Tenant.CCCD</div>
+                    <div class="text-muted small">Hợp đồng @Model.Contract.MaHopDongKyHieu</div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Không gắn với hợp đồng cụ thể.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

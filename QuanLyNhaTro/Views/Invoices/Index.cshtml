@@ -1,0 +1,87 @@
+@model List<Invoice>
+@{
+    ViewData["Title"] = "Quản lý hóa đơn";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="fw-bold mb-0"><i class="bi bi-receipt me-2 text-primary"></i>Quản lý hóa đơn</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Lập hóa đơn</a>
+</div>
+
+<div class="card chart-card mb-3">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Tìm theo mã hóa đơn / phòng</label>
+                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="VD: HD202601-001 hoặc P101" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Kỳ</label>
+                <select name="ky" class="form-select" asp-items="ViewBag.KyList">
+                    <option value="">-- Tất cả --</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Trạng thái</label>
+                <select name="trangThai" class="form-select" asp-items="Html.GetEnumSelectList<InvoicePaymentStatus>()">
+                    <option value="">-- Tất cả --</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Tìm</button>
+            </div>
+            <div class="col-md-1">
+                <a asp-action="Index" class="btn btn-outline-secondary w-100" title="Xóa lọc"><i class="bi bi-x-lg"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card chart-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Phòng</th>
+                    <th>Kỳ</th>
+                    <th class="text-end">Tiền phòng</th>
+                    <th class="text-end">Điện</th>
+                    <th class="text-end">Nước</th>
+                    <th class="text-end">DV</th>
+                    <th class="text-end">Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="10" class="text-center text-muted py-4">Chưa có hóa đơn nào.</td></tr>
+                }
+                @foreach (var inv in Model)
+                {
+                    var daTT = inv.TrangThaiThanhToan == InvoicePaymentStatus.DaThanhToan;
+                    <tr>
+                        <td class="fw-semibold">@inv.MaHoaDonKyHieu</td>
+                        <td><a asp-controller="Rooms" asp-action="Details" asp-route-id="@inv.MaPhong">@inv.Room?.MaPhongKyHieu</a></td>
+                        <td>@inv.KyHoaDon</td>
+                        <td class="text-end">@inv.TienPhong.ToString("N0")</td>
+                        <td class="text-end">@inv.TienDien.ToString("N0")</td>
+                        <td class="text-end">@inv.TienNuoc.ToString("N0")</td>
+                        <td class="text-end">@inv.TienDichVu.ToString("N0")</td>
+                        <td class="text-end fw-bold">@inv.TongTien.ToString("N0")</td>
+                        <td><span class="badge @(daTT ? "badge-dathanhtoan" : "badge-chuathanhtoan")">@inv.TrangThaiThanhToan.GetDisplayName()</span></td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@inv.MaHoaDon" class="btn btn-outline-info btn-sm-icon" title="Xem"><i class="bi bi-eye"></i></a>
+                            @if (!daTT)
+                            {
+                                <a asp-controller="Payments" asp-action="Pay" asp-route-id="@inv.MaHoaDon" class="btn btn-outline-success btn-sm-icon" title="Thanh toán"><i class="bi bi-cash-coin"></i></a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

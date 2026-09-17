@@ -1,0 +1,57 @@
+@model List<Contract>
+@{
+    ViewData["Title"] = "Trả phòng";
+    var today = DateTime.Today;
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Trả phòng - Quyết toán</h3>
+
+<div class="card chart-card mb-3">
+    <div class="card-body py-3">
+        <p class="mb-0 small text-muted">
+            <i class="bi bi-info-circle me-1"></i>
+            Chọn hợp đồng còn hiệu lực để bắt đầu quy trình quyết toán: chốt điện nước → chốt dịch vụ → kiểm tra công nợ → tính cọc → quyết toán → thanh lý hợp đồng → cập nhật phòng.
+            Mỗi hợp đồng chỉ được quyết toán <b>một lần duy nhất</b>.
+        </p>
+    </div>
+</div>
+
+<div class="card chart-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Phòng</th>
+                    <th>Người thuê</th>
+                    <th>Thời hạn</th>
+                    <th class="text-end">Giá thuê</th>
+                    <th class="text-end">Tiền cọc</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">Không có hợp đồng nào có thể trả phòng.</td></tr>
+                }
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@c.MaHopDongKyHieu</td>
+                        <td>@c.Room?.MaPhongKyHieu</td>
+                        <td>@c.Tenant?.HoTen</td>
+                        <td class="small">@c.NgayBatDau.ToString("dd/MM/yy") → @c.NgayKetThuc.ToString("dd/MM/yy")</td>
+                        <td class="text-end">@c.GiaThue.ToString("N0")</td>
+                        <td class="text-end">@c.TienCoc.ToString("N0")</td>
+                        <td class="text-center">
+                            <a asp-action="Settle" asp-route-id="@c.MaHopDong" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-box-arrow-right me-1"></i>Quyết toán trả phòng
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

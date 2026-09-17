@@ -1,0 +1,98 @@
+@model List<Contract>
+@{
+    ViewData["Title"] = "Quản lý hợp đồng";
+    var today = DateTime.Today;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="fw-bold mb-0"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Quản lý hợp đồng</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Lập hợp đồng</a>
+</div>
+
+<div class="card chart-card mb-3">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Tìm kiếm theo mã HĐ / phòng / người thuê</label>
+                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="VD: HD0001 hoặc P101" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Trạng thái</label>
+                <select name="trangThai" class="form-select" asp-items="Html.GetEnumSelectList<ContractStatus>()">
+                    <option value="">-- Tất cả --</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Cảnh báo</label>
+                <div class="form-check form-switch pt-2">
+                    <input class="form-check-input" type="checkbox" name="sapHetHan" value="true" @(ViewBag.SapHetHan == true ? "checked" : "") id="sapHetHanSwitch" onchange="this.form.submit()">
+                    <label class="form-check-label" for="sapHetHanSwitch">Chỉ hiện sắp hết hạn (30 ngày)</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card chart-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Phòng</th>
+                    <th>Người thuê</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th class="text-end">Giá thuê</th>
+                    <th class="text-end">Cọc</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted py-4">Chưa có hợp đồng nào.</td></tr>
+                }
+                @foreach (var c in Model)
+                {
+                    var conHieuLuc = c.TrangThai != ContractStatus.DaThanhLy;
+                    var conSoNgay = (c.NgayKetThuc.Date - today).Days;
+                    <tr>
+                        <td class="fw-semibold">@c.MaHopDongKyHieu</td>
+                        <td>@c.Room?.MaPhongKyHieu</td>
+                        <td>@c.Tenant?.HoTen</td>
+                        <td>@c.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @c.NgayKetThuc.ToString("dd/MM/yyyy")
+                            @if (conHieuLuc && conSoNgay <= 30)
+                            {
+                                <span class="badge badge-saphethan ms-1" title="Sắp hết hạn">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    @(conSoNgay >= 0 ? $"còn {conSoNgay} ngày" : $"quá hạn {-conSoNgay} ngày")
+                                </span>
+                            }
+                        </td>
+                        <td class="text-end">@c.GiaThue.ToString("N0")</td>
+                        <td class="text-end">@c.TienCoc.ToString("N0")</td>
+                        <td><span class="badge @(c.TrangThai == ContractStatus.DaThanhLy ? "badge-dathanhly" : "badge-hieuluc")">@c.TrangThai.GetDisplayName()</span></td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@c.MaHopDong" class="btn btn-outline-info btn-sm-icon" title="Chi tiết"><i class="bi bi-eye"></i></a>
+                            @if (conHieuLuc)
+                            {
+                                <a asp-action="Renew" asp-route-id="@c.MaHopDong" class="btn btn-outline-primary btn-sm-icon" title="Gia hạn"><i class="bi bi-arrow-repeat"></i></a>
+                                <form asp-action="Liquidate" asp-route-id="@c.MaHopDong" method="post" class="d-inline"
+                                      data-confirm="Thanh lý hợp đồng @c.MaHopDongKyHieu? Phòng phải không còn hóa đơn chưa thanh toán.">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm-icon" title="Thanh lý"><i class="bi bi-journal-check"></i></button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

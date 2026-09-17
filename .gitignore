@@ -1,0 +1,14 @@
+bin/
+obj/
+.vs/
+*.user
+appsettings.Production.json
+
+# Database demo & logs (không đưa vào repo)
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# Metadata tool cục bộ
+.freebuff/

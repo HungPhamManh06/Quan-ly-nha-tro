@@ -1,0 +1,65 @@
+@model RenewContractViewModel
+@{
+    ViewData["Title"] = "Gia hạn hợp đồng";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-arrow-repeat me-2 text-primary"></i>Gia hạn hợp đồng</h3>
+
+<div class="card chart-card mb-3">
+    <div class="card-header bg-transparent fw-semibold">Thông tin hợp đồng hiện tại</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3"><span class="text-muted small">Mã hợp đồng</span><div class="fw-semibold">@Model.MaHopDongKyHieu</div></div>
+            <div class="col-md-3"><span class="text-muted small">Phòng</span><div class="fw-semibold">@Model.TenPhong</div></div>
+            <div class="col-md-3"><span class="text-muted small">Người thuê</span><div class="fw-semibold">@Model.TenNguoiThue</div></div>
+            <div class="col-md-3"><span class="text-muted small">Thời hạn</span><div>@Model.NgayBatDau.ToString("dd/MM/yyyy") → @Model.NgayKetThuc.ToString("dd/MM/yyyy")</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="card chart-card">
+    <div class="card-header bg-transparent fw-semibold">Thông tin gia hạn</div>
+    <div class="card-body">
+        <form asp-action="Renew" method="post">
+            <input type="hidden" asp-for="MaHopDong" />
+            <input type="hidden" asp-for="MaHopDongKyHieu" />
+            <input type="hidden" asp-for="TenPhong" />
+            <input type="hidden" asp-for="TenNguoiThue" />
+            <input type="hidden" asp-for="NgayBatDau" />
+            <input type="hidden" asp-for="NgayKetThuc" />
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="NgayKetThucMoi" class="form-label"></label>
+                    <input asp-for="NgayKetThucMoi" class="form-control" type="date" />
+                    <span asp-validation-for="NgayKetThucMoi" class="text-danger small"></span>
+                    <div class="form-text">Phải sau ngày kết thúc hiện tại (@Model.NgayKetThuc.ToString("dd/MM/yyyy")).</div>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="GiaThueMoi" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="GiaThueMoi" class="form-control" type="number" min="0" placeholder="Giữ nguyên @Model.GiaThue.ToString("N0")" />
+                        <span class="input-group-text">đ/tháng</span>
+                    </div>
+                    <span asp-validation-for="GiaThueMoi" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="TienCocMoi" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="TienCocMoi" class="form-control" type="number" min="0" placeholder="Giữ nguyên @Model.TienCoc.ToString("N0")" />
+                        <span class="input-group-text">đ</span>
+                    </div>
+                    <span asp-validation-for="TienCocMoi" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="GhiChu" class="form-label"></label>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Gia hạn</button>
+                <a asp-action="Details" asp-route-id="@Model.MaHopDong" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,74 @@
+@model Contract
+@{
+    ViewData["Title"] = "Lập hợp đồng";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Lập hợp đồng</h3>
+
+<div class="card chart-card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="MaHopDongKyHieu" class="form-label"></label>
+                    <input asp-for="MaHopDongKyHieu" class="form-control" />
+                    <span asp-validation-for="MaHopDongKyHieu" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="MaPhong" class="form-label"></label>
+                    <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.Rooms">
+                        <option value="">-- Chọn phòng --</option>
+                    </select>
+                    <span asp-validation-for="MaPhong" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="MaNguoiThue" class="form-label"></label>
+                    <select asp-for="MaNguoiThue" class="form-select" asp-items="ViewBag.Tenants">
+                        <option value="">-- Chọn người thuê --</option>
+                    </select>
+                    <span asp-validation-for="MaNguoiThue" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="NgayBatDau" class="form-label"></label>
+                    <input asp-for="NgayBatDau" class="form-control" type="date" />
+                    <span asp-validation-for="NgayBatDau" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="NgayKetThuc" class="form-label"></label>
+                    <input asp-for="NgayKetThuc" class="form-control" type="date" />
+                    <span asp-validation-for="NgayKetThuc" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="GiaThue" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="GiaThue" class="form-control" type="number" min="1" />
+                        <span class="input-group-text">đ/tháng</span>
+                    </div>
+                    <span asp-validation-for="GiaThue" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="TienCoc" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="TienCoc" class="form-control" type="number" min="0" />
+                        <span class="input-group-text">đ</span>
+                    </div>
+                    <span asp-validation-for="TienCoc" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="GhiChu" class="form-label"></label>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="alert alert-info small mt-3 mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                Lưu ý: Một phòng không được có hai hợp đồng còn hiệu lực trong cùng khoảng thời gian.
+                Ngày kết thúc phải sau ngày bắt đầu, giá thuê &gt; 0, tiền cọc ≥ 0.
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Lưu hợp đồng</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>

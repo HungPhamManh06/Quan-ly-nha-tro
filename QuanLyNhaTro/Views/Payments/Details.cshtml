@@ -1,0 +1,26 @@
+@model Payment
+@{
+    ViewData["Title"] = "Chi tiết thanh toán";
+}
+
+<h3 class="fw-bold mb-4"><i class="bi bi-cash-coin me-2 text-success"></i>Chi tiết thanh toán #@Model.MaThanhToan</h3>
+
+<div class="card chart-card" style="max-width:640px">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-4">Hóa đơn</dt>
+            <dd class="col-8"><a asp-controller="Invoices" asp-action="Details" asp-route-id="@Model.MaHoaDon">@Model.Invoice?.MaHoaDonKyHieu</a></dd>
+            <dt class="col-4">Phòng</dt><dd class="col-8">@Model.Invoice?.Room?.MaPhongKyHieu</dd>
+            <dt class="col-4">Kỳ</dt><dd class="col-8">@Model.Invoice?.KyHoaDon</dd>
+            <dt class="col-4">Tổng tiền hóa đơn</dt><dd class="col-8">@Model.Invoice?.TongTien.ToString("N0") đ</dd>
+            <dt class="col-4">Số tiền ghi nhận</dt><dd class="col-8 fw-bold">@Model.SoTien.ToString("N0") đ</dd>
+            <dt class="col-4">Ngày thanh toán</dt><dd class="col-8">@Model.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</dd>
+            <dt class="col-4">Phương thức</dt><dd class="col-8">@Model.PhuongThuc.GetDisplayName()</dd>
+            <dt class="col-4">Ghi chú</dt><dd class="col-8">@(Model.GhiChu ?? "-")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Danh sách</a>
+</div>
