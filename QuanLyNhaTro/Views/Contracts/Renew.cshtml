@@ -3,23 +3,30 @@
     ViewData["Title"] = "Gia hạn hợp đồng";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-arrow-repeat me-2 text-primary"></i>Gia hạn hợp đồng</h3>
+<a asp-action="Details" asp-route-id="@Model.MaHopDong" class="back-link"><i class="bi bi-arrow-left"></i>Chi tiết hợp đồng</a>
 
-<div class="card chart-card mb-3">
-    <div class="card-header bg-transparent fw-semibold">Thông tin hợp đồng hiện tại</div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Gia hạn hợp đồng @Model.MaHopDongKyHieu</h1>
+        <p class="page-subtitle">Kéo dài thời hạn thuê — lịch sử gia hạn được lưu lại</p>
+    </div>
+</div>
+
+<div class="card mb-3" style="max-width:960px">
+    <div class="card-header">Thông tin hợp đồng hiện tại</div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-3"><span class="text-muted small">Mã hợp đồng</span><div class="fw-semibold">@Model.MaHopDongKyHieu</div></div>
-            <div class="col-md-3"><span class="text-muted small">Phòng</span><div class="fw-semibold">@Model.TenPhong</div></div>
-            <div class="col-md-3"><span class="text-muted small">Người thuê</span><div class="fw-semibold">@Model.TenNguoiThue</div></div>
-            <div class="col-md-3"><span class="text-muted small">Thời hạn</span><div>@Model.NgayBatDau.ToString("dd/MM/yyyy") → @Model.NgayKetThuc.ToString("dd/MM/yyyy")</div></div>
+        <div class="row g-3">
+            <div class="col-md-3"><div class="kpi-label">Phòng</div><div class="fw-semibold">@Model.TenPhong</div></div>
+            <div class="col-md-3"><div class="kpi-label">Người thuê</div><div class="fw-semibold">@Model.TenNguoiThue</div></div>
+            <div class="col-md-3"><div class="kpi-label">Thời hạn</div><div class="fw-semibold num">@Model.NgayBatDau.ToString("dd/MM/yyyy") → @Model.NgayKetThuc.ToString("dd/MM/yyyy")</div></div>
+            <div class="col-md-3"><div class="kpi-label">Giá thuê / cọc</div><div class="fw-semibold money">@Model.GiaThue.ToString("N0") đ · cọc @Model.TienCoc.ToString("N0") đ</div></div>
         </div>
     </div>
 </div>
 
-<div class="card chart-card">
-    <div class="card-header bg-transparent fw-semibold">Thông tin gia hạn</div>
-    <div class="card-body">
+<div class="card" style="max-width:960px">
+    <div class="card-header">Thông tin gia hạn</div>
+    <div class="card-body p-4">
         <form asp-action="Renew" method="post">
             <input type="hidden" asp-for="MaHopDong" />
             <input type="hidden" asp-for="MaHopDongKyHieu" />
@@ -53,11 +60,11 @@
                 </div>
                 <div class="col-12">
                     <label asp-for="GhiChu" class="form-label"></label>
-                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2" placeholder="Lý do / ghi chú gia hạn (không bắt buộc)"></textarea>
                 </div>
             </div>
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Gia hạn</button>
+            <div class="d-flex gap-2 pt-3 mt-3 border-top">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-repeat me-1"></i>Gia hạn</button>
                 <a asp-action="Details" asp-route-id="@Model.MaHopDong" class="btn btn-secondary">Hủy</a>
             </div>
         </form>

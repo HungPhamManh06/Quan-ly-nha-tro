@@ -3,16 +3,25 @@
     ViewData["Title"] = "Lập hợp đồng";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Lập hợp đồng</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý hợp đồng</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Lập hợp đồng</h1>
+        <p class="page-subtitle">Gắn phòng với người thuê và điều khoản thuê</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:960px">
+    <div class="card-body p-4">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-            <div class="row g-3">
+
+            <h6 class="section-title"><i class="bi bi-file-earmark-text text-primary"></i>Thông tin hợp đồng</h6>
+            <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label asp-for="MaHopDongKyHieu" class="form-label"></label>
-                    <input asp-for="MaHopDongKyHieu" class="form-control" />
+                    <input asp-for="MaHopDongKyHieu" class="form-control" placeholder="VD: HD0001" />
                     <span asp-validation-for="MaHopDongKyHieu" class="text-danger small"></span>
                 </div>
                 <div class="col-md-4">
@@ -29,6 +38,10 @@
                     </select>
                     <span asp-validation-for="MaNguoiThue" class="text-danger small"></span>
                 </div>
+            </div>
+
+            <h6 class="section-title"><i class="bi bi-calendar-range text-primary"></i>Thời hạn &amp; điều khoản</h6>
+            <div class="row g-3 mb-4">
                 <div class="col-md-3">
                     <label asp-for="NgayBatDau" class="form-label"></label>
                     <input asp-for="NgayBatDau" class="form-control" type="date" />
@@ -42,7 +55,7 @@
                 <div class="col-md-3">
                     <label asp-for="GiaThue" class="form-label"></label>
                     <div class="input-group">
-                        <input asp-for="GiaThue" class="form-control" type="number" min="1" />
+                        <input asp-for="GiaThue" class="form-control" type="number" min="1" placeholder="3500000" />
                         <span class="input-group-text">đ/tháng</span>
                     </div>
                     <span asp-validation-for="GiaThue" class="text-danger small"></span>
@@ -50,22 +63,23 @@
                 <div class="col-md-3">
                     <label asp-for="TienCoc" class="form-label"></label>
                     <div class="input-group">
-                        <input asp-for="TienCoc" class="form-control" type="number" min="0" />
+                        <input asp-for="TienCoc" class="form-control" type="number" min="0" placeholder="7000000" />
                         <span class="input-group-text">đ</span>
                     </div>
                     <span asp-validation-for="TienCoc" class="text-danger small"></span>
                 </div>
                 <div class="col-12">
                     <label asp-for="GhiChu" class="form-label"></label>
-                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2" placeholder="Ghi chú về hợp đồng (không bắt buộc)"></textarea>
                 </div>
             </div>
-            <div class="alert alert-info small mt-3 mb-0">
-                <i class="bi bi-info-circle me-1"></i>
-                Lưu ý: Một phòng không được có hai hợp đồng còn hiệu lực trong cùng khoảng thời gian.
-                Ngày kết thúc phải sau ngày bắt đầu, giá thuê &gt; 0, tiền cọc ≥ 0.
+
+            <div class="alert alert-info small d-flex gap-2 align-items-start mb-4">
+                <i class="bi bi-info-circle mt-1"></i>
+                <div>Một phòng không được có hai hợp đồng còn hiệu lực trong cùng khoảng thời gian. Ngày kết thúc phải sau ngày bắt đầu, giá thuê &gt; 0, tiền cọc ≥ 0.</div>
             </div>
-            <div class="mt-4">
+
+            <div class="d-flex gap-2 pt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Lưu hợp đồng</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>

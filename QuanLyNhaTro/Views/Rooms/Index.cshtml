@@ -1,8 +1,13 @@
 @model List<Room>
 @{
     ViewData["Title"] = "Quản lý phòng";
-}
-@functions {
+    var tong = Model.Count;
+    var dangThue = Model.Count(r => r.TrangThai == RoomStatus.DangThue);
+    var trong = Model.Count(r => r.TrangThai == RoomStatus.Trong);
+    var daCoc = Model.Count(r => r.TrangThai == RoomStatus.DaCoc);
+    var dangSua = Model.Count(r => r.TrangThai == RoomStatus.DangSuaChua);
+    string? curStatus = ViewBag.TrangThai as string;
+
     string Badge(RoomStatus s) => s switch
     {
         RoomStatus.Trong => "badge-trong",
@@ -13,75 +18,162 @@
     };
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-door-open me-2 text-primary"></i>Quản lý phòng</h3>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Thêm phòng</a>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Quản lý phòng</h1>
+        <p class="page-subtitle">Theo dõi tình trạng và thông tin các phòng</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Thêm phòng</a>
+    </div>
 </div>
 
-<div class="card chart-card mb-3">
-    <div class="card-body py-3">
-        <form method="get" class="row g-2 align-items-end">
-            <div class="col-md-4">
-                <label class="form-label small text-muted">Tìm kiếm theo mã / tên phòng</label>
-                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="VD: P101 hoặc Phòng 101" />
+<!-- Summary cards (click để lọc) -->
+<div class="row g-2 mb-3">
+    <div class="col-6 col-md">
+        <a asp-action="Index" class="text-decoration-none">
+            <div class="card card-hover h-100 @(string.IsNullOrEmpty(curStatus) ? "border-primary" : "")">
+                <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
+                    <span class="kpi-icon primary" style="width:36px;height:36px;font-size:1rem"><i class="bi bi-grid"></i></span>
+                    <div><div class="kpi-label">Tất cả</div><div class="fw-bold">@tong</div></div>
+                </div>
             </div>
-            <div class="col-md-3">
-                <label class="form-label small text-muted">Trạng thái</label>
+        </a>
+    </div>
+    <div class="col-6 col-md">
+        <a asp-action="Index" asp-route-trangThai="DangThue" class="text-decoration-none">
+            <div class="card card-hover h-100 @(curStatus == "DangThue" ? "border-warning" : "")">
+                <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
+                    <span class="kpi-icon warning" style="width:36px;height:36px;font-size:1rem"><i class="bi bi-door-open"></i></span>
+                    <div><div class="kpi-label">Đang thuê</div><div class="fw-bold">@dangThue</div></div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md">
+        <a asp-action="Index" asp-route-trangThai="Trong" class="text-decoration-none">
+            <div class="card card-hover h-100 @(curStatus == "Trong" ? "border-success" : "")">
+                <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
+                    <span class="kpi-icon success" style="width:36px;height:36px;font-size:1rem"><i class="bi bi-door-closed"></i></span>
+                    <div><div class="kpi-label">Trống</div><div class="fw-bold">@trong</div></div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md">
+        <a asp-action="Index" asp-route-trangThai="DaCoc" class="text-decoration-none">
+            <div class="card card-hover h-100 @(curStatus == "DaCoc" ? "border-primary" : "")">
+                <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
+                    <span class="kpi-icon violet" style="width:36px;height:36px;font-size:1rem"><i class="bi bi-bookmark-check"></i></span>
+                    <div><div class="kpi-label">Đã cọc</div><div class="fw-bold">@daCoc</div></div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md">
+        <a asp-action="Index" asp-route-trangThai="DangSuaChua" class="text-decoration-none">
+            <div class="card card-hover h-100 @(curStatus == "DangSuaChua" ? "border-danger" : "")">
+                <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
+                    <span class="kpi-icon danger" style="width:36px;height:36px;font-size:1rem"><i class="bi bi-tools"></i></span>
+                    <div><div class="kpi-label">Sửa chữa</div><div class="fw-bold">@dangSua</div></div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Bộ lọc -->
+<div class="card mb-3">
+    <div class="card-body toolbar py-2">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute" style="left:12px;top:50%;transform:translateY(-50%);color:#94A3B8"></i>
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" style="padding-left:34px" placeholder="Tìm theo mã / tên phòng… (VD: P101)" />
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
                 <select name="trangThai" class="form-select" asp-items="Html.GetEnumSelectList<RoomStatus>()">
-                    <option value="">-- Tất cả --</option>
+                    <option value="">Tất cả trạng thái</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <button class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Tìm kiếm</button>
+            <div class="col-md-3 col-lg-2">
+                <button class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Lọc</button>
             </div>
-            <div class="col-md-2">
-                <a asp-action="Index" class="btn btn-outline-secondary w-100">Xóa lọc</a>
+            <div class="col-md-3 col-lg-2">
+                <a asp-action="Index" class="btn btn-secondary w-100">Xóa lọc</a>
             </div>
         </form>
     </div>
 </div>
 
-<div class="card chart-card">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead>
-                <tr>
-                    <th>Mã phòng</th>
-                    <th>Tên phòng</th>
-                    <th>Loại</th>
-                    <th class="text-end">Giá (đ/tháng)</th>
-                    <th>Người thuê</th>
-                    <th>Trạng thái</th>
-                    <th class="text-center">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="7" class="text-center text-muted py-4">Chưa có phòng nào.</td></tr>
-                }
-                @foreach (var room in Model)
-                {
-                    var today = DateTime.Today;
-                    var current = room.Contracts.FirstOrDefault(c => c.TrangThai != ContractStatus.DaThanhLy && c.NgayBatDau <= today && c.NgayKetThuc >= today);
+<!-- Bảng phòng -->
+<div class="card">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-door-open"></i></div>
+            <div class="empty-title">Chưa có phòng nào</div>
+            <p class="empty-desc">Hãy thêm phòng đầu tiên để bắt đầu quản lý nhà trọ.</p>
+            <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Thêm phòng</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
-                        <td class="fw-semibold">@room.MaPhongKyHieu</td>
-                        <td>@room.TenPhong</td>
-                        <td>@room.LoaiPhong</td>
-                        <td class="text-end">@room.GiaPhong.ToString("N0")</td>
-                        <td>@(current?.Tenant?.HoTen ?? "-")</td>
-                        <td><span class="badge @Badge(room.TrangThai)">@room.TrangThai.GetDisplayName()</span></td>
-                        <td class="text-center">
-                            <a asp-action="Details" asp-route-id="@room.MaPhong" class="btn btn-outline-info btn-sm-icon" title="Xem chi tiết"><i class="bi bi-eye"></i></a>
-                            <a asp-action="Edit" asp-route-id="@room.MaPhong" class="btn btn-outline-warning btn-sm-icon" title="Sửa"><i class="bi bi-pencil"></i></a>
-                            <form asp-action="Delete" asp-route-id="@room.MaPhong" method="post" class="d-inline"
-                                  data-confirm="Bạn có chắc muốn xóa phòng @room.MaPhongKyHieu? (Nếu phòng đã phát sinh dữ liệu nghiệp vụ, hệ thống sẽ chuyển sang Ngừng sử dụng thay vì xóa)">
-                                <button type="submit" class="btn btn-outline-danger btn-sm-icon" title="Xóa"><i class="bi bi-trash"></i></button>
-                            </form>
-                        </td>
+                        <th>Phòng</th>
+                        <th class="d-none d-md-table-cell">Loại</th>
+                        <th class="text-end">Giá thuê</th>
+                        <th class="d-none d-lg-table-cell">Người thuê</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (var room in Model)
+                    {
+                        var today = DateTime.Today;
+                        var current = room.Contracts.FirstOrDefault(c => c.TrangThai != ContractStatus.DaThanhLy && c.NgayBatDau <= today && c.NgayKetThuc >= today);
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-primary">@room.MaPhongKyHieu</div>
+                                <div class="small td-muted">@room.TenPhong</div>
+                            </td>
+                            <td class="d-none d-md-table-cell">@room.LoaiPhong<span class="d-block small td-muted">@(room.DienTich?.ToString("N1") ?? "—") m²</span></td>
+                            <td class="text-end money"><span class="fw-semibold">@room.GiaPhong.ToString("N0") đ</span><span class="d-block small td-muted">/tháng</span></td>
+                            <td class="d-none d-lg-table-cell">
+                                @if (current?.Tenant != null)
+                                {
+                                    <span class="fw-semibold">@current.Tenant.HoTen</span>
+                                }
+                                else
+                                {
+                                    <span class="td-muted">—</span>
+                                }
+                            </td>
+                            <td><span class="badge @Badge(room.TrangThai)">@room.TrangThai.GetDisplayName()</span></td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn-dots" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Thao tác"><i class="bi bi-three-dots-vertical"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" asp-action="Details" asp-route-id="@room.MaPhong"><i class="bi bi-eye"></i>Xem chi tiết</a></li>
+                                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@room.MaPhong"><i class="bi bi-pencil"></i>Chỉnh sửa</a></li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li>
+                                            <form asp-action="Delete" asp-route-id="@room.MaPhong" method="post" data-confirm="Phòng @room.MaPhongKyHieu sẽ bị xóa khỏi danh sách. Nếu phòng đã phát sinh dữ liệu nghiệp vụ, hệ thống sẽ chuyển sang Ngừng sử dụng thay vì xóa." data-confirm-danger="true" data-confirm-title="Xóa phòng?">
+                                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash"></i>Xóa phòng</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

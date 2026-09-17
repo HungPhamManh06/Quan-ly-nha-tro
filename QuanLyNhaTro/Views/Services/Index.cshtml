@@ -4,47 +4,54 @@
     var usages = (List<ServiceUsage>)ViewBag.Usages;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-wifi me-2 text-info"></i>Quản lý dịch vụ</h3>
+<div class="page-header">
     <div>
-        <a asp-action="CreateService" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Thêm dịch vụ</a>
-        <a asp-action="CreateUsage" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i>Ghi sử dụng dịch vụ</a>
+        <h1 class="page-title">Quản lý dịch vụ</h1>
+        <p class="page-subtitle">Danh mục dịch vụ và bản ghi sử dụng theo kỳ</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="CreateService" class="btn btn-secondary"><i class="bi bi-gear me-1"></i>Thêm dịch vụ</a>
+        <a asp-action="CreateUsage" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Ghi sử dụng dịch vụ</a>
     </div>
 </div>
 
-<div class="card chart-card mb-3">
-    <div class="card-body py-3">
-        <form method="get" class="row g-2 align-items-end">
+<div class="card mb-3">
+    <div class="card-body toolbar py-2">
+        <form method="get" class="row g-2 align-items-center">
             <div class="col-md-4">
-                <label class="form-label small text-muted">Tìm dịch vụ</label>
-                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="VD: Internet" />
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute" style="left:12px;top:50%;transform:translateY(-50%);color:#94A3B8"></i>
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" style="padding-left:34px" placeholder="Tìm dịch vụ… (VD: Internet)" />
+                </div>
             </div>
             <div class="col-md-4">
-                <label class="form-label small text-muted">Kỳ sử dụng (yyyy-MM)</label>
-                <input type="month" name="ky" value="@ViewBag.Ky" class="form-control" />
+                <input type="month" name="ky" value="@ViewBag.Ky" class="form-control" title="Kỳ sử dụng" />
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Tìm</button>
+                <button class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Lọc</button>
             </div>
             <div class="col-md-2">
-                <a asp-action="Index" class="btn btn-outline-secondary w-100">Xóa lọc</a>
+                <a asp-action="Index" class="btn btn-secondary w-100">Xóa lọc</a>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Danh sách dịch vụ -->
-<div class="card chart-card mb-3">
-    <div class="card-header bg-transparent fw-semibold"><i class="bi bi-list-ul me-2"></i>Danh sách dịch vụ</div>
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0 align-middle">
+<div class="card mb-3">
+    <div class="card-header d-flex align-items-center">
+        <span><i class="bi bi-list-ul me-2 text-primary"></i>Danh sách dịch vụ</span>
+        <span class="ms-auto mini-tag">@services.Count dịch vụ</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
                     <th>Tên dịch vụ</th>
                     <th>Đơn vị tính</th>
                     <th class="text-end">Đơn giá</th>
                     <th>Trạng thái</th>
-                    <th class="text-center">Thao tác</th>
+                    <th class="text-end">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,63 +59,75 @@
                 {
                     <tr>
                         <td class="fw-semibold">@s.TenDichVu</td>
-                        <td>@s.DonViTinh</td>
-                        <td class="text-end">@s.DonGia.ToString("N0") đ</td>
+                        <td class="td-muted">@s.DonViTinh</td>
+                        <td class="text-end money">@s.DonGia.ToString("N0") đ</td>
                         <td><span class="badge @(s.TrangThai ? "badge-hieuluc" : "badge-dathanhly")">@(s.TrangThai ? "Hoạt động" : "Ngưng")</span></td>
-                        <td class="text-center">
-                            <a asp-action="EditService" asp-route-id="@s.MaDichVu" class="btn btn-outline-warning btn-sm-icon" title="Sửa"><i class="bi bi-pencil"></i></a>
-                            <form asp-action="DeleteService" asp-route-id="@s.MaDichVu" method="post" class="d-inline"
-                                  data-confirm="Xóa dịch vụ @s.TenDichVu? (Dịch vụ đã phát sinh lịch sử sẽ bị ngưng hoạt động thay vì xóa)">
-                                <button type="submit" class="btn btn-outline-danger btn-sm-icon" title="Xóa"><i class="bi bi-trash"></i></button>
-                            </form>
+                        <td class="text-end">
+                            <div class="dropdown">
+                                <button class="btn-dots" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Thao tác"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-action="EditService" asp-route-id="@s.MaDichVu"><i class="bi bi-pencil"></i>Chỉnh sửa</a></li>
+                                    <li>
+                                        <form asp-action="DeleteService" asp-route-id="@s.MaDichVu" method="post" data-confirm="Dịch vụ @s.TenDichVu sẽ bị xóa. Nếu đã phát sinh lịch sử sử dụng, hệ thống sẽ chuyển sang Ngừng hoạt động thay vì xóa." data-confirm-danger="true" data-confirm-title="Xóa dịch vụ?">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash"></i>Xóa</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 }
-                @if (!services.Any()) { <tr><td colspan="5" class="text-muted text-center py-3">Chưa có dịch vụ.</td></tr> }
+                @if (!services.Any()) { <tr><td colspan="5" class="td-muted text-center py-3">Chưa có dịch vụ.</td></tr> }
             </tbody>
         </table>
     </div>
 </div>
 
 <!-- Sử dụng dịch vụ theo kỳ -->
-<div class="card chart-card">
-    <div class="card-header bg-transparent fw-semibold d-flex">
-        <span><i class="bi bi-clipboard-check me-2"></i>Sử dụng dịch vụ kỳ <span class="text-primary">@ViewBag.Ky</span></span>
-        <span class="ms-auto fw-normal">Tổng: @usages.Sum(su => su.ThanhTien).ToString("N0") đ</span>
+<div class="card">
+    <div class="card-header d-flex align-items-center">
+        <span><i class="bi bi-clipboard-check me-2 text-primary"></i>Sử dụng dịch vụ kỳ <span class="text-primary">@ViewBag.Ky</span></span>
+        <span class="ms-auto money fw-bold">@usages.Sum(su => su.ThanhTien).ToString("N0") đ</span>
     </div>
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0 align-middle">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
                     <th>Phòng</th>
                     <th>Dịch vụ</th>
-                    <th>Kỳ</th>
+                    <th class="d-none d-md-table-cell">Kỳ</th>
                     <th class="text-end">Số lượng</th>
-                    <th class="text-end">Đơn giá áp dụng</th>
+                    <th class="d-none d-lg-table-cell text-end">Đơn giá áp dụng</th>
                     <th class="text-end">Thành tiền</th>
-                    <th class="text-center">Thao tác</th>
+                    <th class="text-end">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var su in usages)
                 {
                     <tr>
-                        <td><a asp-controller="Rooms" asp-action="Details" asp-route-id="@su.Room?.MaPhong">@su.Room?.MaPhongKyHieu</a></td>
+                        <td><a class="cell-code" asp-controller="Rooms" asp-action="Details" asp-route-id="@su.Room?.MaPhong">@su.Room?.MaPhongKyHieu</a></td>
                         <td>@su.Service?.TenDichVu</td>
-                        <td>@su.KySuDung</td>
-                        <td class="text-end">@su.SoLuong.ToString("N0") @su.Service?.DonViTinh</td>
-                        <td class="text-end">@su.DonGiaApDung.ToString("N0")</td>
-                        <td class="text-end fw-semibold">@su.ThanhTien.ToString("N0")</td>
-                        <td class="text-center">
-                            <a asp-action="EditUsage" asp-route-id="@su.MaSuDung" class="btn btn-outline-warning btn-sm-icon" title="Sửa"><i class="bi bi-pencil"></i></a>
-                            <form asp-action="DeleteUsage" asp-route-id="@su.MaSuDung" method="post" class="d-inline"
-                                  data-confirm="Xóa bản ghi sử dụng dịch vụ @su.Service?.TenDichVu phòng @su.Room?.MaPhongKyHieu?">
-                                <button type="submit" class="btn btn-outline-danger btn-sm-icon" title="Xóa"><i class="bi bi-trash"></i></button>
-                            </form>
+                        <td class="d-none d-md-table-cell td-muted">@su.KySuDung</td>
+                        <td class="text-end num">@su.SoLuong.ToString("N0") @su.Service?.DonViTinh</td>
+                        <td class="d-none d-lg-table-cell text-end money td-muted">@su.DonGiaApDung.ToString("N0") đ</td>
+                        <td class="text-end money fw-semibold">@su.ThanhTien.ToString("N0") đ</td>
+                        <td class="text-end">
+                            <div class="dropdown">
+                                <button class="btn-dots" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Thao tác"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-action="EditUsage" asp-route-id="@su.MaSuDung"><i class="bi bi-pencil"></i>Chỉnh sửa</a></li>
+                                    <li>
+                                        <form asp-action="DeleteUsage" asp-route-id="@su.MaSuDung" method="post" data-confirm="Xóa bản ghi sử dụng dịch vụ @su.Service?.TenDichVu phòng @su.Room?.MaPhongKyHieu?" data-confirm-danger="true" data-confirm-title="Xóa bản ghi?">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash"></i>Xóa</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 }
-                @if (!usages.Any()) { <tr><td colspan="7" class="text-muted text-center py-3">Chưa có bản ghi sử dụng trong kỳ này.</td></tr> }
+                @if (!usages.Any()) { <tr><td colspan="7" class="td-muted text-center py-3">Chưa có bản ghi sử dụng trong kỳ này.</td></tr> }
             </tbody>
         </table>
     </div>

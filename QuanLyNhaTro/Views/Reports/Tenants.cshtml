@@ -4,30 +4,36 @@
     var dangThue = Model.Count(t => t.TrangThai == "Đang thuê");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-people me-2 text-info"></i>Báo cáo người thuê</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Thống kê &amp; báo cáo</a>
+
+<div class="page-header">
     <div>
-        <a asp-action="Export" asp-route-type="tenants" asp-route-format="excel" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
-        <a asp-action="Index" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Menu báo cáo</a>
+        <h1 class="page-title">Báo cáo người thuê</h1>
+        <p class="page-subtitle">Số người đang thuê và theo phòng</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Export" asp-route-type="tenants" asp-route-format="excel" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
     </div>
 </div>
 
 <div class="row g-3 mb-3">
-    <div class="col-md-4"><div class="card stat-card text-center p-3"><div class="text-muted small">Tổng người thuê</div><div class="fs-3 fw-bold">@Model.Count</div></div></div>
-    <div class="col-md-4"><div class="card stat-card text-center p-3"><div class="text-muted small">Đang thuê</div><div class="fs-3 fw-bold text-success">@dangThue</div></div></div>
-    <div class="col-md-4"><div class="card stat-card text-center p-3"><div class="text-muted small">Chưa thuê / đã trả</div><div class="fs-3 fw-bold text-secondary">@(Model.Count - dangThue)</div></div></div>
+    <div class="col-md-4"><div class="card kpi-card text-center py-3"><div class="kpi-value">@Model.Count</div><div class="kpi-label">Tổng người thuê</div></div></div>
+    <div class="col-md-4"><div class="card kpi-card text-center py-3"><div class="kpi-value text-success">@dangThue</div><div class="kpi-label">Đang thuê</div></div></div>
+    <div class="col-md-4"><div class="card kpi-card text-center py-3"><div class="kpi-value text-muted">@(Model.Count - dangThue)</div><div class="kpi-label">Chưa thuê / đã trả</div></div></div>
 </div>
 
-<div class="card chart-card">
+<div class="card">
     <div class="table-responsive">
-        <table class="table table-hover table-sm mb-0">
-            <thead><tr><th>Họ tên</th><th>CCCD</th><th>SĐT</th><th>Phòng hiện tại</th><th>Trạng thái</th></tr></thead>
+        <table class="table table-hover">
+            <thead><tr><th>Họ tên</th><th>CCCD</th><th class="d-none d-md-table-cell">SĐT</th><th>Phòng hiện tại</th><th>Trạng thái</th></tr></thead>
             <tbody>
                 @foreach (var t in Model)
                 {
                     <tr>
-                        <td>@t.HoTen</td><td>@t.CCCD</td><td>@t.SoDienThoai</td>
-                        <td>@(string.IsNullOrEmpty(t.PhongHienTai) ? "-" : t.PhongHienTai)</td>
+                        <td class="fw-semibold">@t.HoTen</td>
+                        <td class="num">@t.CCCD</td>
+                        <td class="d-none d-md-table-cell num">@(t.SoDienThoai ?? "—")</td>
+                        <td>@(string.IsNullOrEmpty(t.PhongHienTai) ? "—" : t.PhongHienTai)</td>
                         <td><span class="badge @(t.TrangThai == "Đang thuê" ? "badge-hieuluc" : "badge-dathanhly")">@t.TrangThai</span></td>
                     </tr>
                 }

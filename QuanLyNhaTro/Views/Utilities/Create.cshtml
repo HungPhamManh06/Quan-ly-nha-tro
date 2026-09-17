@@ -3,13 +3,21 @@
     ViewData["Title"] = "Ghi chỉ số điện nước";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-plus-circle me-2 text-primary"></i>Ghi chỉ số điện nước</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý điện nước</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Ghi chỉ số điện nước</h1>
+        <p class="page-subtitle">Nhập chỉ số mới theo kỳ — tiền được tính tự động</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:960px">
+    <div class="card-body p-4">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-            <div class="row g-3">
+
+            <div class="row g-3 mb-1">
                 <div class="col-md-6">
                     <label asp-for="MaPhong" class="form-label"></label>
                     <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.Rooms" id="roomSelect">
@@ -22,9 +30,12 @@
                     <input asp-for="KyGhi" class="form-control" type="month" />
                     <span asp-validation-for="KyGhi" class="text-danger small"></span>
                 </div>
+            </div>
+
+            <div class="row g-3 mt-2 mb-3">
                 <div class="col-md-6">
-                    <div class="border rounded p-3 h-100">
-                        <h6 class="text-primary"><i class="bi bi-lightning-charge me-1"></i>Điện</h6>
+                    <div class="border rounded-3 p-3 h-100" style="border-color:var(--color-border) !important">
+                        <h6 class="text-primary fw-bold"><i class="bi bi-lightning-charge me-1"></i>Điện</h6>
                         <div class="row g-2">
                             <div class="col-6">
                                 <label asp-for="ChiSoDienCu" class="form-label small"></label>
@@ -42,12 +53,13 @@
                                     <span class="input-group-text">đ/kW</span>
                                 </div>
                             </div>
+                            <div class="col-12 text-end small td-muted">Tiền điện: <span class="fw-bold text-primary" id="tienDienPreview">0 đ</span></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="border rounded p-3 h-100">
-                        <h6 class="text-info"><i class="bi bi-droplet me-1"></i>Nước</h6>
+                    <div class="border rounded-3 p-3 h-100" style="border-color:var(--color-border) !important">
+                        <h6 class="text-info fw-bold"><i class="bi bi-droplet me-1"></i>Nước</h6>
                         <div class="row g-2">
                             <div class="col-6">
                                 <label asp-for="ChiSoNuocCu" class="form-label small"></label>
@@ -65,19 +77,22 @@
                                     <span class="input-group-text">đ/m³</span>
                                 </div>
                             </div>
+                            <div class="col-12 text-end small td-muted">Tiền nước: <span class="fw-bold text-info" id="tienNuocPreview">0 đ</span></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <label asp-for="GhiChu" class="form-label"></label>
-                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2" placeholder="Ghi chú (không bắt buộc)"></textarea>
                 </div>
             </div>
-            <div class="alert alert-info small mt-3 mb-0">
-                <i class="bi bi-info-circle me-1"></i>
-                Chỉ số mới phải lớn hơn hoặc bằng chỉ số cũ. Mỗi phòng + kỳ chỉ được ghi một bản ghi.
+
+            <div class="alert alert-info small d-flex gap-2 align-items-start mb-4">
+                <i class="bi bi-info-circle mt-1"></i>
+                <div>Chỉ số mới phải lớn hơn hoặc bằng chỉ số cũ. Mỗi phòng + kỳ chỉ được ghi một bản ghi.</div>
             </div>
-            <div class="mt-4">
+
+            <div class="d-flex gap-2 pt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Lưu chỉ số</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>
@@ -87,7 +102,6 @@
 
 @section Scripts {
     <script>
-        // Tự tính tiền khi nhập (preview phía client, server vẫn tính lại)
         function recalc() {
             const dCu = parseFloat(document.getElementById('ChiSoDienCu')?.value || 0);
             const dMoi = parseFloat(document.getElementById('ChiSoDienMoi')?.value || 0);
@@ -95,17 +109,15 @@
             const nCu = parseFloat(document.getElementById('ChiSoNuocCu')?.value || 0);
             const nMoi = parseFloat(document.getElementById('ChiSoNuocMoi')?.value || 0);
             const nGia = parseFloat(document.getElementById('DonGiaNuoc')?.value || 0);
-            if (dMoi >= dCu) {
-                const el = document.getElementById('tienDienPreview');
-                if (el) el.textContent = new Intl.NumberFormat('vi-VN').format((dMoi - dCu) * dGia) + ' đ';
-            }
-            if (nMoi >= nCu) {
-                const el = document.getElementById('tienNuocPreview');
-                if (el) el.textContent = new Intl.NumberFormat('vi-VN').format((nMoi - nCu) * nGia) + ' đ';
-            }
+            const fmt = n => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
+            const elD = document.getElementById('tienDienPreview');
+            const elN = document.getElementById('tienNuocPreview');
+            if (elD) elD.textContent = dMoi >= dCu ? fmt((dMoi - dCu) * dGia) : '—';
+            if (elN) elN.textContent = nMoi >= nCu ? fmt((nMoi - nCu) * nGia) : '—';
         }
         ['ChiSoDienCu','ChiSoDienMoi','DonGiaDien','ChiSoNuocCu','ChiSoNuocMoi','DonGiaNuoc'].forEach(function (id) {
             document.getElementById(id)?.addEventListener('input', recalc);
         });
+        recalc();
     </script>
 }

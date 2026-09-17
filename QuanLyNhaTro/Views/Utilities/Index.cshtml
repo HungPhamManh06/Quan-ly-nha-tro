@@ -3,78 +3,96 @@
     ViewData["Title"] = "Quản lý điện nước";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-lightning-charge me-2 text-warning"></i>Quản lý điện nước</h3>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Ghi chỉ số</a>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Quản lý điện nước</h1>
+        <p class="page-subtitle">Ghi chỉ số theo kỳ và tính tiền điện nước từng phòng</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Ghi chỉ số</a>
+    </div>
 </div>
 
-<div class="card chart-card mb-3">
-    <div class="card-body py-3">
-        <form method="get" class="row g-2 align-items-end">
+<div class="card mb-3">
+    <div class="card-body toolbar py-2">
+        <form method="get" class="row g-2 align-items-center">
             <div class="col-md-4">
-                <label class="form-label small text-muted">Tìm phòng</label>
-                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="VD: P101" />
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute" style="left:12px;top:50%;transform:translateY(-50%);color:#94A3B8"></i>
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" style="padding-left:34px" placeholder="Tìm phòng… (VD: P101)" />
+                </div>
             </div>
             <div class="col-md-4">
-                <label class="form-label small text-muted">Kỳ ghi (yyyy-MM)</label>
                 <select name="ky" class="form-select" asp-items="ViewBag.KyList">
-                    <option value="">-- Tất cả kỳ --</option>
+                    <option value="">Tất cả kỳ</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Tìm</button>
+                <button class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Lọc</button>
             </div>
             <div class="col-md-2">
-                <a asp-action="Index" class="btn btn-outline-secondary w-100">Xóa lọc</a>
+                <a asp-action="Index" class="btn btn-secondary w-100">Xóa lọc</a>
             </div>
         </form>
     </div>
 </div>
 
-<div class="card chart-card">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead>
-                <tr>
-                    <th>Kỳ</th>
-                    <th>Phòng</th>
-                    <th class="text-end">Điện cũ → mới</th>
-                    <th class="text-end">Số dùng</th>
-                    <th class="text-end">Đơn giá</th>
-                    <th class="text-end">Tiền điện</th>
-                    <th class="text-end">Nước cũ → mới</th>
-                    <th class="text-end">Số dùng</th>
-                    <th class="text-end">Tiền nước</th>
-                    <th class="text-center">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="10" class="text-center text-muted py-4">Chưa có bản ghi điện nước nào.</td></tr>
-                }
-                @foreach (var u in Model)
-                {
+<div class="card">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon" style="background:var(--color-warning-soft);color:#B45309"><i class="bi bi-lightning-charge"></i></div>
+            <div class="empty-title">Chưa có bản ghi điện nước</div>
+            <p class="empty-desc">Ghi chỉ số điện nước đầu tiên cho các phòng đang thuê.</p>
+            <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Ghi chỉ số</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
-                        <td class="fw-semibold">@u.KyGhi</td>
-                        <td><a asp-controller="Rooms" asp-action="Details" asp-route-id="@u.MaPhong">@u.Room?.MaPhongKyHieu</a></td>
-                        <td class="text-end small">@u.ChiSoDienCu.ToString("N0") → @u.ChiSoDienMoi.ToString("N0")</td>
-                        <td class="text-end">@u.SoDienSuDung.ToString("N0") kW</td>
-                        <td class="text-end small">@u.DonGiaDien.ToString("N0")</td>
-                        <td class="text-end fw-semibold">@u.TienDien.ToString("N0")</td>
-                        <td class="text-end small">@u.ChiSoNuocCu.ToString("N0") → @u.ChiSoNuocMoi.ToString("N0")</td>
-                        <td class="text-end">@u.SoNuocSuDung.ToString("N0") m³</td>
-                        <td class="text-end fw-semibold">@u.TienNuoc.ToString("N0")</td>
-                        <td class="text-center">
-                            <a asp-action="Edit" asp-route-id="@u.MaGhiChiSo" class="btn btn-outline-warning btn-sm-icon" title="Sửa"><i class="bi bi-pencil"></i></a>
-                            <form asp-action="Delete" asp-route-id="@u.MaGhiChiSo" method="post" class="d-inline"
-                                  data-confirm="Xóa bản ghi điện nước phòng @u.Room?.MaPhongKyHieu kỳ @u.KyGhi?">
-                                <button type="submit" class="btn btn-outline-danger btn-sm-icon" title="Xóa"><i class="bi bi-trash"></i></button>
-                            </form>
-                        </td>
+                        <th>Kỳ</th>
+                        <th>Phòng</th>
+                        <th class="d-none d-lg-table-cell text-end">Điện cũ → mới</th>
+                        <th class="text-end">Số dùng</th>
+                        <th class="d-none d-md-table-cell text-end">Đơn giá</th>
+                        <th class="text-end">Tiền điện</th>
+                        <th class="d-none d-xl-table-cell text-end">Nước cũ → mới</th>
+                        <th class="text-end">Tiền nước</th>
+                        <th class="text-end">Thao tác</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td class="td-strong">@u.KyGhi</td>
+                            <td><a class="cell-code" asp-controller="Rooms" asp-action="Details" asp-route-id="@u.MaPhong">@u.Room?.MaPhongKyHieu</a></td>
+                            <td class="d-none d-lg-table-cell text-end small num td-muted">@u.ChiSoDienCu.ToString("N0") → @u.ChiSoDienMoi.ToString("N0")</td>
+                            <td class="text-end num">@u.SoDienSuDung.ToString("N0") kW</td>
+                            <td class="d-none d-md-table-cell text-end small num td-muted">@u.DonGiaDien.ToString("N0")</td>
+                            <td class="text-end money fw-semibold">@u.TienDien.ToString("N0") đ</td>
+                            <td class="d-none d-xl-table-cell text-end small num td-muted">@u.ChiSoNuocCu.ToString("N0") → @u.ChiSoNuocMoi.ToString("N0")</td>
+                            <td class="text-end money fw-semibold">@u.TienNuoc.ToString("N0") đ</td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn-dots" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Thao tác"><i class="bi bi-three-dots-vertical"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@u.MaGhiChiSo"><i class="bi bi-pencil"></i>Chỉnh sửa</a></li>
+                                        <li>
+                                            <form asp-action="Delete" asp-route-id="@u.MaGhiChiSo" method="post" data-confirm="Xóa bản ghi điện nước phòng @u.Room?.MaPhongKyHieu kỳ @u.KyGhi?" data-confirm-danger="true" data-confirm-title="Xóa bản ghi?">
+                                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash"></i>Xóa</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

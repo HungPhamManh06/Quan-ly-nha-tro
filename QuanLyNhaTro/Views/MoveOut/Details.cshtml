@@ -3,33 +3,43 @@
     ViewData["Title"] = "Kết quả trả phòng";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-check2-circle me-2 text-success"></i>Kết quả quyết toán trả phòng</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Danh sách trả phòng</a>
 
-<div class="card chart-card mb-3" style="max-width:760px">
-    <div class="card-header bg-transparent fw-semibold">Hợp đồng @Model.Contract?.MaHopDongKyHieu - phòng @Model.Contract?.Room?.MaPhongKyHieu</div>
-    <div class="card-body">
-        <table class="table table-bordered mb-3">
-            <tbody>
-                <tr><td class="w-50">Ngày trả phòng</td><td class="text-end">@Model.NgayTraPhong.ToString("dd/MM/yyyy")</td></tr>
-                <tr><td>Công nợ trước trả phòng</td><td class="text-end">@Model.CongNoTruocTraPhong.ToString("N0") đ</td></tr>
-                <tr><td>Tiền phát sinh cuối kỳ</td><td class="text-end">@Model.TienPhatSinhCuoiKy.ToString("N0") đ</td></tr>
-                <tr class="table-warning fw-semibold"><td>Khoản phải thu cuối cùng</td><td class="text-end">@Model.KhoanPhaiThuCuoiCung.ToString("N0") đ</td></tr>
-                <tr><td>Tiền cọc ban đầu</td><td class="text-end">@Model.TienCocBanDau.ToString("N0") đ</td></tr>
-                <tr><td>Tiền khấu trừ cọc</td><td class="text-end">@Model.TienKhauTruCoc.ToString("N0") đ</td></tr>
-                <tr class="table-success fw-semibold"><td>Tiền hoàn cọc</td><td class="text-end">@Model.TienHoanCoc.ToString("N0") đ</td></tr>
-                <tr class="table-danger fw-semibold"><td>Tiền phải trả thêm</td><td class="text-end">@Model.TienPhaiTraThem.ToString("N0") đ</td></tr>
-                <tr><td>Trạng thái phòng sau trả</td><td class="text-end">@Model.TrangThaiPhongSauTra.GetDisplayName()</td></tr>
-                <tr><td>Ghi chú</td><td class="text-end">@(Model.GhiChu ?? "-")</td></tr>
-            </tbody>
-        </table>
-        <div class="alert alert-success mb-0">
-            <i class="bi bi-check-circle me-1"></i>
-            Hợp đồng đã thanh lý, phòng đã chuyển sang trạng thái <b>@Model.TrangThaiPhongSauTra.GetDisplayName()</b>.
+<div class="page-header">
+    <div class="d-flex align-items-center gap-3">
+        <div class="brand-icon" style="width:52px;height:52px;border-radius:14px;font-size:1.3rem;background:linear-gradient(135deg,#15803D,#22C55E)"><i class="bi bi-check2-circle"></i></div>
+        <div>
+            <h1 class="page-title mb-0">Kết quả quyết toán trả phòng</h1>
+            <div class="mt-1">
+                <span class="mini-tag">@Model.Contract?.Room?.MaPhongKyHieu</span>
+                <span class="mini-tag ms-1">Hợp đồng @Model.Contract?.MaHopDongKyHieu</span>
+                <span class="mini-tag ms-1">@Model.NgayTraPhong.ToString("dd/MM/yyyy")</span>
+            </div>
         </div>
+    </div>
+    <div class="page-actions">
+        <a asp-controller="Contracts" asp-action="Details" asp-route-id="@Model.MaHopDong" class="btn btn-secondary"><i class="bi bi-file-earmark-text me-1"></i>Xem hợp đồng</a>
     </div>
 </div>
 
-<div>
-    <a asp-controller="Contracts" asp-action="Details" asp-route-id="@Model.MaHopDong" class="btn btn-outline-primary"><i class="bi bi-file-earmark-text me-1"></i>Xem hợp đồng</a>
-    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Danh sách trả phòng</a>
+<div class="card" style="max-width:760px">
+    <div class="card-body">
+        <table class="table table-bordered mb-3" style="border-color:var(--color-border)">
+            <tbody>
+                <tr><td class="w-50 td-muted">Công nợ trước trả phòng</td><td class="text-end money">@Model.CongNoTruocTraPhong.ToString("N0") đ</td></tr>
+                <tr><td class="td-muted">Tiền phát sinh cuối kỳ</td><td class="text-end money">@Model.TienPhatSinhCuoiKy.ToString("N0") đ</td></tr>
+                <tr style="background:var(--color-warning-soft)"><td class="fw-semibold">Khoản phải thu cuối cùng</td><td class="text-end money fw-semibold">@Model.KhoanPhaiThuCuoiCung.ToString("N0") đ</td></tr>
+                <tr><td class="td-muted">Tiền cọc ban đầu</td><td class="text-end money">@Model.TienCocBanDau.ToString("N0") đ</td></tr>
+                <tr><td class="td-muted">Tiền khấu trừ cọc</td><td class="text-end money">@Model.TienKhauTruCoc.ToString("N0") đ</td></tr>
+                <tr style="background:var(--color-success-soft)"><td class="fw-semibold">Tiền hoàn cọc</td><td class="text-end money fw-bold text-success">@Model.TienHoanCoc.ToString("N0") đ</td></tr>
+                <tr style="background:var(--color-danger-soft)"><td class="fw-semibold">Tiền phải trả thêm</td><td class="text-end money fw-bold text-danger">@Model.TienPhaiTraThem.ToString("N0") đ</td></tr>
+                <tr><td class="td-muted">Trạng thái phòng sau trả</td><td class="text-end fw-semibold">@Model.TrangThaiPhongSauTra.GetDisplayName()</td></tr>
+                <tr><td class="td-muted">Ghi chú</td><td class="text-end">@(Model.GhiChu ?? "—")</td></tr>
+            </tbody>
+        </table>
+        <div class="alert alert-success d-flex gap-2 align-items-start mb-0">
+            <i class="bi bi-check-circle mt-1"></i>
+            <div>Hợp đồng đã thanh lý, phòng đã chuyển sang trạng thái <b>@Model.TrangThaiPhongSauTra.GetDisplayName()</b>.</div>
+        </div>
+    </div>
 </div>

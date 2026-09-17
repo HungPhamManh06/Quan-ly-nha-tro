@@ -3,41 +3,41 @@
     ViewData["Title"] = "Quyết toán trả phòng";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Quyết toán trả phòng</h3>
-    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Chọn hợp đồng khác</a>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Chọn hợp đồng khác</a>
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Quyết toán trả phòng · @Model.TenPhong</h1>
+        <p class="page-subtitle">@Model.TenNguoiThue · Hợp đồng @Model.NgayBatDau.ToString("dd/MM/yyyy") → @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+    </div>
 </div>
 
 <!-- Stepper -->
-<div class="stepper">
-    <div class="step done">1. Hợp đồng</div>
-    <div class="step active">2. Chốt điện nước</div>
-    <div class="step active">3. Chốt dịch vụ</div>
-    <div class="step active">4. Kiểm tra công nợ</div>
-    <div class="step active">5. Tính cọc</div>
-    <div class="step active">6. Quyết toán</div>
-    <div class="step">7. Thanh lý</div>
+<div class="card mb-3">
+    <div class="card-body py-3">
+        <div class="stepper mb-0">
+            <div class="stp done"><div class="stp-num"><i class="bi bi-check-lg"></i></div><div class="stp-label">Hợp đồng</div></div>
+            <div class="stp-line done"></div>
+            <div class="stp active"><div class="stp-num">2</div><div class="stp-label">Chốt điện nước</div></div>
+            <div class="stp-line"></div>
+            <div class="stp active"><div class="stp-num">3</div><div class="stp-label">Chốt dịch vụ</div></div>
+            <div class="stp-line"></div>
+            <div class="stp active"><div class="stp-num">4</div><div class="stp-label">Công nợ</div></div>
+            <div class="stp-line"></div>
+            <div class="stp active"><div class="stp-num">5</div><div class="stp-label">Tiền cọc</div></div>
+            <div class="stp-line"></div>
+            <div class="stp active"><div class="stp-num">6</div><div class="stp-label">Quyết toán</div></div>
+            <div class="stp-line"></div>
+            <div class="stp"><div class="stp-num">7</div><div class="stp-label">Thanh lý</div></div>
+        </div>
+    </div>
 </div>
 
 <div class="row g-3">
     <div class="col-lg-4">
-        <!-- Thông tin hợp đồng -->
-        <div class="card chart-card mb-3">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-file-earmark-text me-2"></i>Hợp đồng</div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-5">Phòng</dt><dd class="col-7">@Model.TenPhong</dd>
-                    <dt class="col-5">Người thuê</dt><dd class="col-7">@Model.TenNguoiThue</dd>
-                    <dt class="col-5">Thời hạn</dt><dd class="col-7 small">@Model.NgayBatDau.ToString("dd/MM/yy") → @Model.NgayKetThuc.ToString("dd/MM/yy")</dd>
-                    <dt class="col-5">Giá thuê</dt><dd class="col-7">@Model.GiaThue.ToString("N0") đ</dd>
-                    <dt class="col-5">Tiền cọc</dt><dd class="col-7 fw-bold text-primary">@Model.TienCoc.ToString("N0") đ</dd>
-                </dl>
-            </div>
-        </div>
-
         <!-- Bước 2: Chốt điện nước -->
-        <div class="card chart-card mb-3">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-lightning-charge me-2 text-warning"></i>Bước 2: Chốt điện nước cuối kỳ</div>
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-lightning-charge me-2 text-warning"></i>Chốt điện nước cuối kỳ</div>
             <div class="card-body">
                 @if (string.IsNullOrEmpty(Model.KyDienNuocCuoi) && Model.ChiSoDienCu == 0 && Model.ChiSoNuocCu == 0)
                 {
@@ -66,14 +66,14 @@
                         </div>
                     </div>
                     <div class="form-text">Chỉ số cũ: điện @Model.ChiSoDienCu.ToString("N0") · nước @Model.ChiSoNuocCu.ToString("N0")</div>
-                    <button type="submit" class="btn btn-outline-primary btn-sm mt-2 w-100"><i class="bi bi-pin-angle me-1"></i>Chốt chỉ số</button>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2 w-100"><i class="bi bi-pin-angle me-1"></i>Chốt chỉ số</button>
                 </form>
             </div>
         </div>
 
         <!-- Bước 3: Chốt dịch vụ -->
-        <div class="card chart-card">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-wifi me-2 text-info"></i>Bước 3: Dịch vụ cuối kỳ</div>
+        <div class="card">
+            <div class="card-header"><i class="bi bi-wifi me-2 text-info"></i>Dịch vụ cuối kỳ</div>
             <div class="card-body">
                 @if (Model.DichVuCuoiKy.Any())
                 {
@@ -82,7 +82,7 @@
                         <tbody>
                             @foreach (var dv in Model.DichVuCuoiKy)
                             {
-                                <tr><td>@dv.TenDichVu</td><td class="text-end small">@dv.SoLuong.ToString("N0") @dv.DonViTinh</td><td class="text-end">@dv.ThanhTien.ToString("N0")</td></tr>
+                                <tr><td>@dv.TenDichVu</td><td class="text-end small num">@dv.SoLuong.ToString("N0") @dv.DonViTinh</td><td class="text-end money">@dv.ThanhTien.ToString("N0") đ</td></tr>
                             }
                         </tbody>
                     </table>
@@ -93,7 +93,7 @@
                 }
                 <form asp-action="ChotDichVu" method="post">
                     <input type="hidden" asp-for="MaHopDong" />
-                    <button type="submit" class="btn btn-outline-primary btn-sm w-100"><i class="bi bi-arrow-clockwise me-1"></i>Kiểm tra / chốt dịch vụ</button>
+                    <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-arrow-clockwise me-1"></i>Kiểm tra / chốt dịch vụ</button>
                 </form>
             </div>
         </div>
@@ -101,37 +101,44 @@
 
     <div class="col-lg-8">
         <!-- Bước 4: Công nợ -->
-        <div class="card chart-card mb-3">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-exclamation-circle me-2 text-danger"></i>Bước 4: Công nợ chưa thanh toán</div>
-            <div class="card-body">
-                @if (Model.HoaDonChuaThanhToan.Any())
-                {
-                    <table class="table table-sm mb-2">
+        <div class="card mb-3">
+            <div class="card-header d-flex align-items-center">
+                <span><i class="bi bi-exclamation-circle me-2 text-danger"></i>Công nợ chưa thanh toán</span>
+                <span class="ms-auto money fw-bold text-danger">@Model.CongNoTruocTraPhong.ToString("N0") đ</span>
+            </div>
+            @if (Model.HoaDonChuaThanhToan.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm">
                         <thead><tr><th>Hóa đơn</th><th>Kỳ</th><th class="text-end">Tổng tiền</th></tr></thead>
                         <tbody>
                             @foreach (var inv in Model.HoaDonChuaThanhToan)
                             {
-                                <tr><td><a asp-controller="Invoices" asp-action="Details" asp-route-id="@inv.MaHoaDon">@inv.MaHoaDonKyHieu</a></td><td>@inv.KyHoaDon</td><td class="text-end">@inv.TongTien.ToString("N0")</td></tr>
+                                <tr>
+                                    <td><a class="cell-code" asp-controller="Invoices" asp-action="Details" asp-route-id="@inv.MaHoaDon">@inv.MaHoaDonKyHieu</a></td>
+                                    <td>@inv.KyHoaDon</td>
+                                    <td class="text-end money">@inv.TongTien.ToString("N0") đ</td>
+                                </tr>
                             }
                         </tbody>
                     </table>
-                }
-                else
-                {
-                    <p class="text-success small mb-2"><i class="bi bi-check-circle me-1"></i>Không còn hóa đơn chưa thanh toán.</p>
-                }
-                <div class="d-flex justify-content-between border-top pt-2">
-                    <span class="fw-semibold">Tổng công nợ trước trả phòng:</span>
-                    <span class="fw-bold text-danger">@Model.CongNoTruocTraPhong.ToString("N0") đ</span>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="card-body pt-0">
+                    <div class="d-flex align-items-center gap-2 text-success small">
+                        <i class="bi bi-check-circle"></i>Không còn hóa đơn chưa thanh toán.
+                    </div>
+                </div>
+            }
         </div>
 
         <!-- Bước 5-6: Quyết toán -->
-        <div class="card chart-card">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-calculator me-2 text-primary"></i>Bước 5-6: Tính cọc &amp; quyết toán</div>
+        <div class="card">
+            <div class="card-header"><i class="bi bi-calculator me-2 text-primary"></i>Tính cọc &amp; quyết toán</div>
             <div class="card-body">
-                <form asp-action="Confirm" method="post" id="settleForm" data-confirm="Xác nhận quyết toán trả phòng? Hợp đồng sẽ được thanh lý và phòng chuyển trạng thái mới. Thao tác chỉ thực hiện được MỘT lần.">
+                <form asp-action="Confirm" method="post" id="settleForm" data-confirm="Xác nhận quyết toán trả phòng phòng @Model.TenPhong? Hợp đồng sẽ được thanh lý và phòng chuyển trạng thái mới. Thao tác chỉ thực hiện được MỘT lần." data-confirm-danger="true" data-confirm-title="Quyết toán trả phòng?">
                     <input type="hidden" asp-for="MaHopDong" />
                     <input type="hidden" asp-for="TenPhong" />
                     <input type="hidden" asp-for="TenNguoiThue" />
@@ -150,7 +157,7 @@
                         <div class="col-md-4">
                             <label asp-for="TienPhatSinhCuoiKy" class="form-label">Phát sinh cuối kỳ khác (đ)</label>
                             <input asp-for="TienPhatSinhCuoiKy" class="form-control" type="number" min="0" id="phatSinhInput" />
-                            <div class="form-text">Tiền điện nước + dịch vụ đã chốt sẽ được hệ thống tự cộng khi quyết toán.</div>
+                            <div class="form-text">Tiền điện nước + dịch vụ đã chốt được hệ thống tự cộng khi quyết toán.</div>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="TrangThaiPhongSauTra" class="form-label"></label>
@@ -164,25 +171,25 @@
                     </div>
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-bordered mb-0" id="settleTable">
+                        <table class="table table-bordered mb-0" id="settleTable" style="border-color:var(--color-border)">
                             <tbody>
-                                <tr><td>Công nợ trước trả phòng</td><td class="text-end">@Model.CongNoTruocTraPhong.ToString("N0") đ</td></tr>
+                                <tr><td>Công nợ trước trả phòng</td><td class="text-end money">@Model.CongNoTruocTraPhong.ToString("N0") đ</td></tr>
                                 <tr><td>Tiền phát sinh cuối kỳ (điện nước + dịch vụ chốt)</td><td class="text-end" id="phatSinhCell">Được tính khi quyết toán</td></tr>
-                                <tr class="table-warning fw-semibold"><td>Khoản phải thu cuối cùng = Công nợ + Phát sinh</td><td class="text-end" id="khoanPhaiThuCell">@Model.CongNoTruocTraPhong.ToString("N0") đ</td></tr>
-                                <tr><td>Tiền cọc ban đầu</td><td class="text-end">@Model.TienCoc.ToString("N0") đ</td></tr>
-                                <tr><td>Tiền khấu trừ cọc = MIN(Cọc, Phải thu)</td><td class="text-end" id="khauTruCell">-</td></tr>
-                                <tr class="table-success fw-semibold"><td>Tiền hoàn cọc = MAX(0, Cọc − Phải thu)</td><td class="text-end" id="hoanCocCell">-</td></tr>
-                                <tr class="table-danger fw-semibold"><td>Tiền phải trả thêm = MAX(0, Phải thu − Cọc)</td><td class="text-end" id="traThemCell">-</td></tr>
+                                <tr style="background:var(--color-warning-soft)"><td class="fw-semibold">Khoản phải thu cuối cùng = Công nợ + Phát sinh</td><td class="text-end money fw-semibold" id="khoanPhaiThuCell">@Model.CongNoTruocTraPhong.ToString("N0") đ</td></tr>
+                                <tr><td>Tiền cọc ban đầu</td><td class="text-end money">@Model.TienCoc.ToString("N0") đ</td></tr>
+                                <tr><td>Tiền khấu trừ cọc = MIN(Cọc, Phải thu)</td><td class="text-end money" id="khauTruCell">—</td></tr>
+                                <tr style="background:var(--color-success-soft)"><td class="fw-semibold">Tiền hoàn cọc = MAX(0, Cọc − Phải thu)</td><td class="text-end money fw-semibold text-success" id="hoanCocCell">—</td></tr>
+                                <tr style="background:var(--color-danger-soft)"><td class="fw-semibold">Tiền phải trả thêm = MAX(0, Phải thu − Cọc)</td><td class="text-end money fw-semibold text-danger" id="traThemCell">—</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="alert alert-warning small mt-3 mb-0">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        Khoản phải thu cuối cùng và các số liệu quyết toán được tính lại từ database khi bấm quyết toán — số tiền phát sinh bạn nhập chỉ là mục khác chưa ghi thành hóa đơn.
+                    <div class="alert alert-warning small d-flex gap-2 align-items-start mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle mt-1"></i>
+                        <div>Khoản phải thu và các số liệu quyết toán được tính lại từ database khi bấm quyết toán — số tiền phát sinh bạn nhập chỉ là mục khác chưa ghi thành hóa đơn.</div>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="d-flex gap-2 pt-3 mt-3 border-top">
                         <button type="submit" class="btn btn-danger"><i class="bi bi-check2-circle me-1"></i>Quyết toán trả phòng</button>
                     </div>
                 </form>

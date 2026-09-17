@@ -3,44 +3,62 @@
     ViewData["Title"] = "Thanh toán";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-cash-coin me-2 text-success"></i>Danh sách thanh toán</h3>
-
-<div class="card chart-card">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead>
-                <tr>
-                    <th>Mã TT</th>
-                    <th>Hóa đơn</th>
-                    <th>Phòng</th>
-                    <th>Kỳ</th>
-                    <th class="text-end">Số tiền</th>
-                    <th>Ngày thanh toán</th>
-                    <th>Phương thức</th>
-                    <th class="text-center">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="8" class="text-center text-muted py-4">Chưa có thanh toán nào.</td></tr>
-                }
-                @foreach (var p in Model)
-                {
-                    <tr>
-                        <td class="fw-semibold">#@p.MaThanhToan</td>
-                        <td><a asp-controller="Invoices" asp-action="Details" asp-route-id="@p.MaHoaDon">@p.Invoice?.MaHoaDonKyHieu</a></td>
-                        <td>@p.Invoice?.Room?.MaPhongKyHieu</td>
-                        <td>@p.Invoice?.KyHoaDon</td>
-                        <td class="text-end fw-semibold">@p.SoTien.ToString("N0") đ</td>
-                        <td>@p.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@p.PhuongThuc.GetDisplayName()</td>
-                        <td class="text-center">
-                            <a asp-action="Details" asp-route-id="@p.MaThanhToan" class="btn btn-outline-info btn-sm-icon" title="Chi tiết"><i class="bi bi-eye"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Danh sách thanh toán</h1>
+        <p class="page-subtitle">Lịch sử ghi nhận thanh toán hóa đơn</p>
     </div>
+</div>
+
+<div class="card">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon" style="background:var(--color-success-soft);color:var(--color-success)"><i class="bi bi-cash-coin"></i></div>
+            <div class="empty-title">Chưa có thanh toán nào</div>
+            <p class="empty-desc">Thanh toán sẽ xuất hiện ở đây sau khi bạn ghi nhận từ trang hóa đơn.</p>
+            <a asp-controller="Invoices" asp-action="Index" class="btn btn-primary"><i class="bi bi-receipt me-1"></i>Đến trang hóa đơn</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã TT</th>
+                        <th>Hóa đơn</th>
+                        <th>Phòng</th>
+                        <th class="d-none d-md-table-cell">Kỳ</th>
+                        <th class="text-end">Số tiền</th>
+                        <th class="d-none d-lg-table-cell">Ngày thanh toán</th>
+                        <th>Phương thức</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td class="td-strong">#@p.MaThanhToan</td>
+                            <td><a class="cell-code" asp-controller="Invoices" asp-action="Details" asp-route-id="@p.MaHoaDon">@p.Invoice?.MaHoaDonKyHieu</a></td>
+                            <td>@p.Invoice?.Room?.MaPhongKyHieu</td>
+                            <td class="d-none d-md-table-cell td-muted">@p.Invoice?.KyHoaDon</td>
+                            <td class="text-end money fw-semibold text-success">@p.SoTien.ToString("N0") đ</td>
+                            <td class="d-none d-lg-table-cell num">@p.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><span class="mini-tag">@p.PhuongThuc.GetDisplayName()</span></td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn-dots" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Thao tác"><i class="bi bi-three-dots-vertical"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" asp-action="Details" asp-route-id="@p.MaThanhToan"><i class="bi bi-eye"></i>Chi tiết</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

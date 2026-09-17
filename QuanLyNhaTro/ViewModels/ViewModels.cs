@@ -18,6 +18,18 @@ public class LoginViewModel
     public bool RememberMe { get; set; }
 }
 
+// Khoản mục cần xử lý trên Dashboard (dữ liệu thật, chỉ đọc)
+public class AttentionItemViewModel
+{
+    public string Loai { get; set; } = "";          // "hoadon" | "hopdong" | "phong"
+    public string MaSo { get; set; } = "";          // mã phòng / mã hóa đơn / mã hợp đồng
+    public string TieuDe { get; set; } = "";        // dòng đầu hiển thị
+    public string MoTa { get; set; } = "";          // dòng phụ
+    public decimal SoTien { get; set; }             // nếu có (hóa đơn)
+    public string? TrangThai { get; set; }          // nhãn trạng thái
+    public string Url { get; set; } = "";           // link xem chi tiết
+}
+
 public class ChartItemViewModel
 {
     public string Label { get; set; }
@@ -56,6 +68,13 @@ public class DashboardViewModel
     public List<ChartItemViewModel> CongNoChart { get; set; } = new();
     public List<ChartItemViewModel> DienNuocChart { get; set; } = new();
     public List<string> Thangs { get; set; } = new();
+
+    // Doanh thu tháng này và tháng trước để tính xu hướng
+    public decimal DoanhThuThangNay { get; set; }
+    public decimal DoanhThuThangTruoc { get; set; }
+
+    // Section "Cần xử lý" (tối đa 6 khoản mục ưu tiên)
+    public List<AttentionItemViewModel> CanXuLy { get; set; } = new();
 }
 
 public class InvoiceCreateViewModel

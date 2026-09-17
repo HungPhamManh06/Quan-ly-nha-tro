@@ -3,14 +3,23 @@
     ViewData["Title"] = "Sửa người thuê";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa người thuê: @Model.HoTen</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý người thuê</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Sửa người thuê: @Model.HoTen</h1>
+        <p class="page-subtitle">Cập nhật thông tin cá nhân</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:880px">
+    <div class="card-body p-4">
         <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="MaNguoiThue" />
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-            <div class="row g-3">
+
+            <h6 class="section-title"><i class="bi bi-person text-primary"></i>Thông tin cá nhân</h6>
+            <div class="row g-3 mb-4">
                 <div class="col-md-6">
                     <label asp-for="HoTen" class="form-label"></label>
                     <input asp-for="HoTen" class="form-control" />
@@ -18,7 +27,7 @@
                 </div>
                 <div class="col-md-6">
                     <label asp-for="CCCD" class="form-label"></label>
-                    <input asp-for="CCCD" class="form-control" maxlength="12" />
+                    <input asp-for="CCCD" class="form-control num" maxlength="12" />
                     <span asp-validation-for="CCCD" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">
@@ -38,7 +47,8 @@
                     <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
                 </div>
             </div>
-            <div class="mt-4">
+
+            <div class="d-flex gap-2 pt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>

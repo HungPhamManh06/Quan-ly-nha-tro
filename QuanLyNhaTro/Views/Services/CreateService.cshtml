@@ -3,16 +3,23 @@
     ViewData["Title"] = "Thêm dịch vụ";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-plus-circle me-2 text-primary"></i>Thêm dịch vụ</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý dịch vụ</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Thêm dịch vụ</h1>
+        <p class="page-subtitle">Định nghĩa dịch vụ thu thêm: internet, gửi xe, vệ sinh…</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:880px">
+    <div class="card-body p-4">
         <form asp-action="CreateService" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="TenDichVu" class="form-label"></label>
-                    <input asp-for="TenDichVu" class="form-control" placeholder="VD: Internet, Gửi xe, Vệ sinh..." />
+                    <input asp-for="TenDichVu" class="form-control" placeholder="VD: Internet, Gửi xe, Vệ sinh…" />
                     <span asp-validation-for="TenDichVu" class="text-danger small"></span>
                 </div>
                 <div class="col-md-3">
@@ -23,7 +30,7 @@
                 <div class="col-md-3">
                     <label asp-for="DonGia" class="form-label"></label>
                     <div class="input-group">
-                        <input asp-for="DonGia" class="form-control" type="number" min="0" />
+                        <input asp-for="DonGia" class="form-control" type="number" min="0" placeholder="50000" />
                         <span class="input-group-text">đ</span>
                     </div>
                     <span asp-validation-for="DonGia" class="text-danger small"></span>
@@ -32,11 +39,11 @@
                     <label class="form-label">Trạng thái</label>
                     <select asp-for="TrangThai" class="form-select">
                         <option value="true">Hoạt động</option>
-                        <option value="false">Ngưng hoạt động</option>
+                        <option value="false">Ngừng hoạt động</option>
                     </select>
                 </div>
             </div>
-            <div class="mt-4">
+            <div class="d-flex gap-2 pt-3 mt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Lưu dịch vụ</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>

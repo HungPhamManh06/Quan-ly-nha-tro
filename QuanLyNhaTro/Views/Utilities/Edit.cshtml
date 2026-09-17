@@ -3,19 +3,27 @@
     ViewData["Title"] = "Sửa chỉ số điện nước";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa chỉ số - phòng @Model.Room?.MaPhongKyHieu - kỳ @Model.KyGhi</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý điện nước</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Sửa chỉ số · @Model.Room?.MaPhongKyHieu</h1>
+        <p class="page-subtitle">Kỳ ghi @Model.KyGhi</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:960px">
+    <div class="card-body p-4">
         <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="MaGhiChiSo" />
             <input type="hidden" asp-for="MaPhong" />
             <input type="hidden" asp-for="KyGhi" />
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
             <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="border rounded p-3 h-100">
-                        <h6 class="text-primary"><i class="bi bi-lightning-charge me-1"></i>Điện</h6>
+                    <div class="border rounded-3 p-3 h-100" style="border-color:var(--color-border) !important">
+                        <h6 class="text-primary fw-bold"><i class="bi bi-lightning-charge me-1"></i>Điện</h6>
                         <div class="row g-2">
                             <div class="col-6">
                                 <label asp-for="ChiSoDienCu" class="form-label small"></label>
@@ -33,12 +41,13 @@
                                     <span class="input-group-text">đ/kW</span>
                                 </div>
                             </div>
+                            <div class="col-12 text-end small td-muted">Tiền điện: <span class="fw-bold text-primary" id="tienDienPreview">0 đ</span></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="border rounded p-3 h-100">
-                        <h6 class="text-info"><i class="bi bi-droplet me-1"></i>Nước</h6>
+                    <div class="border rounded-3 p-3 h-100" style="border-color:var(--color-border) !important">
+                        <h6 class="text-info fw-bold"><i class="bi bi-droplet me-1"></i>Nước</h6>
                         <div class="row g-2">
                             <div class="col-6">
                                 <label asp-for="ChiSoNuocCu" class="form-label small"></label>
@@ -56,6 +65,7 @@
                                     <span class="input-group-text">đ/m³</span>
                                 </div>
                             </div>
+                            <div class="col-12 text-end small td-muted">Tiền nước: <span class="fw-bold text-info" id="tienNuocPreview">0 đ</span></div>
                         </div>
                     </div>
                 </div>
@@ -64,10 +74,33 @@
                     <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
                 </div>
             </div>
-            <div class="mt-4">
+
+            <div class="d-flex gap-2 pt-3 mt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function recalc() {
+            const dCu = parseFloat(document.getElementById('ChiSoDienCu')?.value || 0);
+            const dMoi = parseFloat(document.getElementById('ChiSoDienMoi')?.value || 0);
+            const dGia = parseFloat(document.getElementById('DonGiaDien')?.value || 0);
+            const nCu = parseFloat(document.getElementById('ChiSoNuocCu')?.value || 0);
+            const nMoi = parseFloat(document.getElementById('ChiSoNuocMoi')?.value || 0);
+            const nGia = parseFloat(document.getElementById('DonGiaNuoc')?.value || 0);
+            const fmt = n => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
+            const elD = document.getElementById('tienDienPreview');
+            const elN = document.getElementById('tienNuocPreview');
+            if (elD) elD.textContent = dMoi >= dCu ? fmt((dMoi - dCu) * dGia) : '—';
+            if (elN) elN.textContent = nMoi >= nCu ? fmt((nMoi - nCu) * nGia) : '—';
+        }
+        ['ChiSoDienCu','ChiSoDienMoi','DonGiaDien','ChiSoNuocCu','ChiSoNuocMoi','DonGiaNuoc'].forEach(function (id) {
+            document.getElementById(id)?.addEventListener('input', recalc);
+        });
+        recalc();
+    </script>
+}

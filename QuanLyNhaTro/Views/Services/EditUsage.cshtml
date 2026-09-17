@@ -3,10 +3,17 @@
     ViewData["Title"] = "Sửa sử dụng dịch vụ";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa sử dụng dịch vụ - @Model.Room?.MaPhongKyHieu - kỳ @Model.KySuDung</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý dịch vụ</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Sửa sử dụng dịch vụ</h1>
+        <p class="page-subtitle">@Model.Room?.MaPhongKyHieu · kỳ @Model.KySuDung</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:880px">
+    <div class="card-body p-4">
         <form asp-action="EditUsage" method="post">
             <input type="hidden" asp-for="MaSuDung" />
             <input type="hidden" asp-for="MaPhong" />
@@ -27,9 +34,9 @@
                     </div>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
-                    <div class="border rounded p-2 w-100 text-center">
-                        <span class="text-muted small">Thành tiền</span>
-                        <div class="fw-bold text-primary" id="thanhTienPreview">0 đ</div>
+                    <div class="border rounded-3 p-3 w-100 text-center" style="border-color:var(--color-border) !important;background:var(--color-primary-soft)">
+                        <div class="kpi-label">Thành tiền</div>
+                        <div class="fw-bold text-primary fs-5 money" id="thanhTienPreview">0 đ</div>
                     </div>
                 </div>
                 <div class="col-12">
@@ -37,7 +44,7 @@
                     <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
                 </div>
             </div>
-            <div class="mt-4">
+            <div class="d-flex gap-2 pt-3 mt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>
@@ -56,5 +63,6 @@
         ['SoLuong', 'DonGiaApDung'].forEach(function (id) {
             document.getElementById(id)?.addEventListener('input', recalc);
         });
+        recalc();
     </script>
 }

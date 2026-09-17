@@ -3,38 +3,48 @@
     ViewData["Title"] = "Thêm người thuê";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-person-plus me-2 text-primary"></i>Thêm người thuê</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý người thuê</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Thêm người thuê</h1>
+        <p class="page-subtitle">Nhập thông tin người thuê mới</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:880px">
+    <div class="card-body p-4">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-            <div class="row g-3">
+
+            <h6 class="section-title"><i class="bi bi-person text-primary"></i>Thông tin cá nhân</h6>
+            <div class="row g-3 mb-4">
                 <div class="col-md-6">
                     <label asp-for="HoTen" class="form-label"></label>
-                    <input asp-for="HoTen" class="form-control" />
+                    <input asp-for="HoTen" class="form-control" placeholder="VD: Nguyễn Văn A" />
                     <span asp-validation-for="HoTen" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="CCCD" class="form-label"></label>
-                    <input asp-for="CCCD" class="form-control" maxlength="12" />
+                    <input asp-for="CCCD" class="form-control num" maxlength="12" placeholder="12 số" />
                     <span asp-validation-for="CCCD" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="SoDienThoai" class="form-label"></label>
-                    <input asp-for="SoDienThoai" class="form-control" />
+                    <input asp-for="SoDienThoai" class="form-control" placeholder="VD: 0901234567" />
                     <span asp-validation-for="SoDienThoai" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="QueQuan" class="form-label"></label>
-                    <input asp-for="QueQuan" class="form-control" />
+                    <input asp-for="QueQuan" class="form-control" placeholder="Quê quán" />
                 </div>
                 <div class="col-12">
                     <label asp-for="GhiChu" class="form-label"></label>
-                    <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                    <textarea asp-for="GhiChu" class="form-control" rows="2" placeholder="Ghi chú thêm (không bắt buộc)"></textarea>
                 </div>
             </div>
-            <div class="mt-4">
+
+            <div class="d-flex gap-2 pt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Lưu người thuê</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>

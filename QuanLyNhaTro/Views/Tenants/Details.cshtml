@@ -4,95 +4,109 @@
     var current = (Contract?)ViewBag.HopDongHienTai;
     var contracts = Model.Contracts.OrderByDescending(c => c.NgayBatDau).ToList();
     var invoices = contracts.SelectMany(c => c.Invoices).OrderByDescending(i => i.KyHoaDon).ToList();
+    var initial = string.IsNullOrWhiteSpace(Model.HoTen) ? "?" : Model.HoTen.Trim().Split(' ')[^1][..1].ToUpper();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-person me-2 text-primary"></i>@Model.HoTen</h3>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.MaNguoiThue" class="btn btn-outline-warning"><i class="bi bi-pencil me-1"></i>Sửa</a>
-        <a asp-controller="Contracts" asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-file-earmark-plus me-1"></i>Lập hợp đồng</a>
-        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Danh sách</a>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý người thuê</a>
+
+<div class="page-header">
+    <div class="d-flex align-items-center gap-3">
+        <div class="brand-icon" style="width:52px;height:52px;border-radius:14px;font-size:1.2rem">@initial</div>
+        <div>
+            <h1 class="page-title mb-0">@Model.HoTen</h1>
+            <div class="mt-1">
+                <span class="badge @(Model.TrangThai == "Đang thuê" ? "badge-hieuluc" : "badge-dathanhly")">@Model.TrangThai</span>
+                <span class="mini-tag ms-1">CCCD @Model.CCCD</span>
+                @if (!string.IsNullOrEmpty(Model.SoDienThoai))
+                {
+                    <span class="mini-tag ms-1">@Model.SoDienThoai</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="page-actions">
+        <a asp-controller="Contracts" asp-action="Create" class="btn btn-primary"><i class="bi bi-file-earmark-plus me-1"></i>Lập hợp đồng</a>
+        <a asp-action="Edit" asp-route-id="@Model.MaNguoiThue" class="btn btn-secondary"><i class="bi bi-pencil me-1"></i>Sửa</a>
     </div>
 </div>
 
 <div class="row g-3">
     <div class="col-lg-4">
-        <div class="card chart-card h-100">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-info-circle me-2 text-primary"></i>Thông tin cá nhân</div>
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-info-circle me-2 text-primary"></i>Thông tin cá nhân</div>
             <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-5">Họ tên</dt><dd class="col-7">@Model.HoTen</dd>
-                    <dt class="col-5">CCCD</dt><dd class="col-7">@Model.CCCD</dd>
-                    <dt class="col-5">SĐT</dt><dd class="col-7">@(Model.SoDienThoai ?? "-")</dd>
-                    <dt class="col-5">Quê quán</dt><dd class="col-7">@(Model.QueQuan ?? "-")</dd>
-                    <dt class="col-5">Trạng thái</dt><dd class="col-7"><span class="badge bg-secondary">@Model.TrangThai</span></dd>
-                    <dt class="col-5">Ghi chú</dt><dd class="col-7">@(Model.GhiChu ?? "-")</dd>
+                <dl>
+                    <div class="d-flex justify-content-between border-bottom py-1"><dt class="text-muted fw-normal small">Họ tên</dt><dd class="fw-semibold">@Model.HoTen</dd></div>
+                    <div class="d-flex justify-content-between border-bottom py-1"><dt class="text-muted fw-normal small">CCCD</dt><dd class="num">@Model.CCCD</dd></div>
+                    <div class="d-flex justify-content-between border-bottom py-1"><dt class="text-muted fw-normal small">SĐT</dt><dd class="num">@(Model.SoDienThoai ?? "—")</dd></div>
+                    <div class="d-flex justify-content-between border-bottom py-1"><dt class="text-muted fw-normal small">Quê quán</dt><dd>@(Model.QueQuan ?? "—")</dd></div>
+                    <div class="d-flex justify-content-between py-1"><dt class="text-muted fw-normal small">Ghi chú</dt><dd class="text-end">@(Model.GhiChu ?? "—")</dd></div>
                 </dl>
             </div>
         </div>
     </div>
 
     <div class="col-lg-8">
-        <div class="card chart-card mb-3">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-door-open me-2 text-primary"></i>Phòng hiện tại</div>
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-door-open me-2 text-primary"></i>Phòng hiện tại</div>
             <div class="card-body">
                 @if (current?.Room != null)
                 {
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-door-closed fs-1 text-primary me-3"></i>
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <span class="kpi-icon primary" style="width:48px;height:48px;font-size:1.4rem"><i class="bi bi-door-closed"></i></span>
                         <div>
-                            <div class="fw-semibold">@current.Room.MaPhongKyHieu - @current.Room.TenPhong</div>
-                            <div class="text-muted small">Hợp đồng @current.MaHopDongKyHieu · @current.NgayBatDau.ToString("dd/MM/yyyy") → @current.NgayKetThuc.ToString("dd/MM/yyyy")</div>
+                            <div class="fw-bold">@current.Room.MaPhongKyHieu · @current.Room.TenPhong</div>
+                            <div class="small td-muted">Hợp đồng @current.MaHopDongKyHieu · @current.NgayBatDau.ToString("dd/MM/yyyy") → @current.NgayKetThuc.ToString("dd/MM/yyyy")</div>
                         </div>
-                        <a asp-controller="Rooms" asp-action="Details" asp-route-id="@current.Room.MaPhong" class="btn btn-outline-primary btn-sm ms-auto">Chi tiết phòng</a>
+                        <a asp-controller="Rooms" asp-action="Details" asp-route-id="@current.Room.MaPhong" class="btn btn-secondary btn-sm ms-auto">Chi tiết phòng</a>
                     </div>
                 }
                 else
                 {
-                    <p class="text-muted mb-0">Chưa thuê phòng nào hiện có hiệu lực.</p>
+                    <div class="td-muted">Chưa thuê phòng nào hiện có hiệu lực.</div>
                 }
             </div>
         </div>
 
-        <div class="card chart-card mb-3">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Hợp đồng (@contracts.Count)</div>
-            <div class="card-body p-0">
-                <table class="table table-sm mb-0">
-                    <thead><tr><th>Mã HĐ</th><th>Phòng</th><th>Thời hạn</th><th>Giá thuê</th><th>Trạng thái</th></tr></thead>
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Hợp đồng (@contracts.Count)</div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead><tr><th>Mã HĐ</th><th>Phòng</th><th>Thời hạn</th><th class="text-end">Giá thuê</th><th>Trạng thái</th></tr></thead>
                     <tbody>
                         @foreach (var c in contracts)
                         {
                             <tr>
-                                <td><a asp-controller="Contracts" asp-action="Details" asp-route-id="@c.MaHopDong">@c.MaHopDongKyHieu</a></td>
+                                <td><a class="cell-code" asp-controller="Contracts" asp-action="Details" asp-route-id="@c.MaHopDong">@c.MaHopDongKyHieu</a></td>
                                 <td>@c.Room?.MaPhongKyHieu</td>
-                                <td class="small">@c.NgayBatDau.ToString("dd/MM/yy") → @c.NgayKetThuc.ToString("dd/MM/yy")</td>
-                                <td>@c.GiaThue.ToString("N0")</td>
+                                <td class="small num">@c.NgayBatDau.ToString("dd/MM/yy") → @c.NgayKetThuc.ToString("dd/MM/yy")</td>
+                                <td class="text-end money">@c.GiaThue.ToString("N0") đ</td>
                                 <td><span class="badge @(c.TrangThai == ContractStatus.DaThanhLy ? "badge-dathanhly" : "badge-hieuluc")">@c.TrangThai.GetDisplayName()</span></td>
                             </tr>
                         }
-                        @if (!contracts.Any()) { <tr><td colspan="5" class="text-muted text-center py-3">Chưa có hợp đồng.</td></tr> }
+                        @if (!contracts.Any()) { <tr><td colspan="5" class="td-muted text-center py-3">Chưa có hợp đồng.</td></tr> }
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div class="card chart-card">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-receipt me-2 text-primary"></i>Hóa đơn &amp; thanh toán (@invoices.Count)</div>
-            <div class="card-body p-0">
-                <table class="table table-sm mb-0">
-                    <thead><tr><th>Mã HĐ</th><th>Phòng</th><th>Kỳ</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
+        <div class="card">
+            <div class="card-header"><i class="bi bi-receipt me-2 text-primary"></i>Hóa đơn &amp; thanh toán (@invoices.Count)</div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead><tr><th>Mã HĐ</th><th>Phòng</th><th>Kỳ</th><th class="text-end">Tổng tiền</th><th>Trạng thái</th></tr></thead>
                     <tbody>
                         @foreach (var inv in invoices.Take(10))
                         {
                             <tr>
-                                <td><a asp-controller="Invoices" asp-action="Details" asp-route-id="@inv.MaHoaDon">@inv.MaHoaDonKyHieu</a></td>
+                                <td><a class="cell-code" asp-controller="Invoices" asp-action="Details" asp-route-id="@inv.MaHoaDon">@inv.MaHoaDonKyHieu</a></td>
                                 <td>@inv.Room?.MaPhongKyHieu</td>
                                 <td>@inv.KyHoaDon</td>
-                                <td>@inv.TongTien.ToString("N0")</td>
+                                <td class="text-end money">@inv.TongTien.ToString("N0") đ</td>
                                 <td><span class="badge @(inv.TrangThaiThanhToan == InvoicePaymentStatus.DaThanhToan ? "badge-dathanhtoan" : "badge-chuathanhtoan")">@inv.TrangThaiThanhToan.GetDisplayName()</span></td>
                             </tr>
                         }
-                        @if (!invoices.Any()) { <tr><td colspan="5" class="text-muted text-center py-3">Chưa có hóa đơn.</td></tr> }
+                        @if (!invoices.Any()) { <tr><td colspan="5" class="td-muted text-center py-3">Chưa có hóa đơn.</td></tr> }
                     </tbody>
                 </table>
             </div>

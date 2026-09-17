@@ -7,31 +7,39 @@
     var daThanhLy = Model.Count(c => c.TrangThai == ContractStatus.DaThanhLy);
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-file-earmark-text me-2 text-secondary"></i>Báo cáo hợp đồng</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Thống kê &amp; báo cáo</a>
+
+<div class="page-header">
     <div>
-        <a asp-action="Export" asp-route-type="contracts" asp-route-format="excel" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
-        <a asp-action="Index" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Menu báo cáo</a>
+        <h1 class="page-title">Báo cáo hợp đồng</h1>
+        <p class="page-subtitle">Hiệu lực, sắp hết hạn và đã thanh lý</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Export" asp-route-type="contracts" asp-route-format="excel" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
     </div>
 </div>
 
 <div class="row g-3 mb-3">
-    <div class="col-md-4"><div class="card stat-card text-center p-3"><div class="text-muted small">Đang hiệu lực</div><div class="fs-3 fw-bold text-success">@hieuLuc</div></div></div>
-    <div class="col-md-4"><div class="card stat-card text-center p-3"><div class="text-muted small">Sắp hết hạn (30 ngày)</div><div class="fs-3 fw-bold text-warning">@sapHetHan</div></div></div>
-    <div class="col-md-4"><div class="card stat-card text-center p-3"><div class="text-muted small">Đã thanh lý</div><div class="fs-3 fw-bold text-secondary">@daThanhLy</div></div></div>
+    <div class="col-md-4"><div class="card kpi-card text-center py-3"><div class="kpi-value text-success">@hieuLuc</div><div class="kpi-label">Đang hiệu lực</div></div></div>
+    <div class="col-md-4"><div class="card kpi-card text-center py-3"><div class="kpi-value" style="color:#B45309">@sapHetHan</div><div class="kpi-label">Sắp hết hạn (30 ngày)</div></div></div>
+    <div class="col-md-4"><div class="card kpi-card text-center py-3"><div class="kpi-value text-muted">@daThanhLy</div><div class="kpi-label">Đã thanh lý</div></div></div>
 </div>
 
-<div class="card chart-card">
+<div class="card">
     <div class="table-responsive">
-        <table class="table table-hover table-sm mb-0">
-            <thead><tr><th>Mã HĐ</th><th>Phòng</th><th>Người thuê</th><th>Bắt đầu</th><th>Kết thúc</th><th class="text-end">Giá thuê</th><th class="text-end">Cọc</th><th>Trạng thái</th></tr></thead>
+        <table class="table table-hover">
+            <thead><tr><th>Mã HĐ</th><th>Phòng</th><th class="d-none d-md-table-cell">Người thuê</th><th class="d-none d-lg-table-cell">Bắt đầu</th><th>Kết thúc</th><th class="text-end">Giá thuê</th><th class="d-none d-lg-table-cell text-end">Cọc</th><th>Trạng thái</th></tr></thead>
             <tbody>
                 @foreach (var c in Model)
                 {
                     <tr>
-                        <td>@c.MaHopDongKyHieu</td><td>@c.Room?.MaPhongKyHieu</td><td>@c.Tenant?.HoTen</td>
-                        <td>@c.NgayBatDau.ToString("dd/MM/yyyy")</td><td>@c.NgayKetThuc.ToString("dd/MM/yyyy")</td>
-                        <td class="text-end">@c.GiaThue.ToString("N0")</td><td class="text-end">@c.TienCoc.ToString("N0")</td>
+                        <td class="cell-code">@c.MaHopDongKyHieu</td>
+                        <td>@c.Room?.MaPhongKyHieu</td>
+                        <td class="d-none d-md-table-cell">@c.Tenant?.HoTen</td>
+                        <td class="d-none d-lg-table-cell num">@c.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                        <td class="num">@c.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                        <td class="text-end money">@c.GiaThue.ToString("N0") đ</td>
+                        <td class="d-none d-lg-table-cell text-end money td-muted">@c.TienCoc.ToString("N0") đ</td>
                         <td><span class="badge @(c.TrangThai == ContractStatus.DaThanhLy ? "badge-dathanhly" : "badge-hieuluc")">@c.TrangThai.GetDisplayName()</span></td>
                     </tr>
                 }

@@ -5,28 +5,32 @@
     var chuaTT = Model.Where(i => i.TrangThaiThanhToan == InvoicePaymentStatus.ChuaThanhToan).ToList();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h3 class="fw-bold mb-0"><i class="bi bi-receipt me-2 text-warning"></i>Báo cáo hóa đơn</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Thống kê &amp; báo cáo</a>
+
+<div class="page-header">
     <div>
-        <a asp-action="Export" asp-route-type="invoices" asp-route-format="excel" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
-        <a asp-action="Index" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Menu báo cáo</a>
+        <h1 class="page-title">Báo cáo hóa đơn</h1>
+        <p class="page-subtitle">Danh sách hóa đơn theo kỳ và trạng thái</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Export" asp-route-type="invoices" asp-route-format="excel" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
     </div>
 </div>
 
-<div class="card chart-card mb-3">
-    <div class="card-body py-3">
-        <form method="get" class="row g-2 align-items-end">
+<div class="card mb-3">
+    <div class="card-body toolbar py-2">
+        <form method="get" class="row g-2 align-items-center">
             <div class="col-md-3">
-                <label class="form-label small text-muted">Từ kỳ</label>
+                <label class="form-label">Từ kỳ</label>
                 <input type="month" name="tuKy" value="@ViewContext.HttpContext.Request.Query["tuKy"]" class="form-control" />
             </div>
             <div class="col-md-3">
-                <label class="form-label small text-muted">Đến kỳ</label>
+                <label class="form-label">Đến kỳ</label>
                 <input type="month" name="denKy" value="@ViewContext.HttpContext.Request.Query["denKy"]" class="form-control" />
             </div>
             <div class="col-md-3">
-                <label class="form-label small text-muted">Trạng thái</label>
-                <select name="trangThai" class="form-select" asp-items="Html.GetEnumSelectList<InvoicePaymentStatus>()"><option value="">-- Tất cả --</option></select>
+                <label class="form-label">Trạng thái</label>
+                <select name="trangThai" class="form-select" asp-items="Html.GetEnumSelectList<InvoicePaymentStatus>()"><option value="">Tất cả</option></select>
             </div>
             <div class="col-md-3"><button class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Lọc</button></div>
         </form>
@@ -34,24 +38,40 @@
 </div>
 
 <div class="row g-3 mb-3">
-    <div class="col-md-6"><div class="card stat-card p-3"><div class="text-muted small">Tổng đã thanh toán (@daTT.Count hóa đơn)</div><div class="fs-4 fw-bold text-success">@daTT.Sum(i => i.TongTien).ToString("N0") đ</div></div></div>
-    <div class="col-md-6"><div class="card stat-card p-3"><div class="text-muted small">Tổng chưa thanh toán (@chuaTT.Count hóa đơn)</div><div class="fs-4 fw-bold text-danger">@chuaTT.Sum(i => i.TongTien).ToString("N0") đ</div></div></div>
+    <div class="col-md-6">
+        <div class="card kpi-card">
+            <div class="card-body">
+                <div class="kpi-top"><span class="kpi-icon success"><i class="bi bi-check-circle"></i></span><span class="kpi-label">Đã thanh toán (@daTT.Count hóa đơn)</span></div>
+                <div class="kpi-value money text-success">@daTT.Sum(i => i.TongTien).ToString("N0") đ</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card kpi-card">
+            <div class="card-body">
+                <div class="kpi-top"><span class="kpi-icon danger"><i class="bi bi-exclamation-circle"></i></span><span class="kpi-label">Chưa thanh toán (@chuaTT.Count hóa đơn)</span></div>
+                <div class="kpi-value money text-danger">@chuaTT.Sum(i => i.TongTien).ToString("N0") đ</div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card chart-card">
+<div class="card">
     <div class="table-responsive">
-        <table class="table table-hover table-sm mb-0">
+        <table class="table table-hover">
             <thead><tr><th>Mã HĐ</th><th>Phòng</th><th>Kỳ</th><th class="text-end">Tiền phòng</th><th class="text-end">Điện</th><th class="text-end">Nước</th><th class="text-end">DV</th><th class="text-end">Tổng</th><th>Trạng thái</th></tr></thead>
             <tbody>
                 @foreach (var i in Model)
                 {
                     <tr>
-                        <td>@i.MaHoaDonKyHieu</td><td>@i.Room?.MaPhongKyHieu</td><td>@i.KyHoaDon</td>
-                        <td class="text-end">@i.TienPhong.ToString("N0")</td>
-                        <td class="text-end">@i.TienDien.ToString("N0")</td>
-                        <td class="text-end">@i.TienNuoc.ToString("N0")</td>
-                        <td class="text-end">@i.TienDichVu.ToString("N0")</td>
-                        <td class="text-end fw-semibold">@i.TongTien.ToString("N0")</td>
+                        <td class="cell-code">@i.MaHoaDonKyHieu</td>
+                        <td>@i.Room?.MaPhongKyHieu</td>
+                        <td>@i.KyHoaDon</td>
+                        <td class="text-end money td-muted">@i.TienPhong.ToString("N0")</td>
+                        <td class="text-end money td-muted">@i.TienDien.ToString("N0")</td>
+                        <td class="text-end money td-muted">@i.TienNuoc.ToString("N0")</td>
+                        <td class="text-end money td-muted">@i.TienDichVu.ToString("N0")</td>
+                        <td class="text-end money fw-bold">@i.TongTien.ToString("N0")</td>
                         <td><span class="badge @(i.TrangThaiThanhToan == InvoicePaymentStatus.DaThanhToan ? "badge-dathanhtoan" : "badge-chuathanhtoan")">@i.TrangThaiThanhToan.GetDisplayName()</span></td>
                     </tr>
                 }

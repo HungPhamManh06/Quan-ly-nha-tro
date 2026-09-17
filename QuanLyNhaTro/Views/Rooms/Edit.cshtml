@@ -3,14 +3,23 @@
     ViewData["Title"] = "Sửa phòng";
 }
 
-<h3 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2 text-warning"></i>Sửa phòng @Model.MaPhongKyHieu</h3>
+<a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i>Quản lý phòng</a>
 
-<div class="card chart-card">
-    <div class="card-body">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Sửa phòng @Model.MaPhongKyHieu</h1>
+        <p class="page-subtitle">Cập nhật thông tin phòng</p>
+    </div>
+</div>
+
+<div class="card" style="max-width:880px">
+    <div class="card-body p-4">
         <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="MaPhong" />
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-            <div class="row g-3">
+
+            <h6 class="section-title"><i class="bi bi-house-door text-primary"></i>Thông tin cơ bản</h6>
+            <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label asp-for="MaPhongKyHieu" class="form-label"></label>
                     <input asp-for="MaPhongKyHieu" class="form-control" />
@@ -27,7 +36,10 @@
                 </div>
                 <div class="col-md-4">
                     <label asp-for="DienTich" class="form-label"></label>
-                    <input asp-for="DienTich" class="form-control" type="number" step="0.01" min="0" />
+                    <div class="input-group">
+                        <input asp-for="DienTich" class="form-control" type="number" step="0.01" min="0" />
+                        <span class="input-group-text">m²</span>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label asp-for="GiaPhong" class="form-label"></label>
@@ -46,7 +58,8 @@
                     <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
                 </div>
             </div>
-            <div class="mt-4">
+
+            <div class="d-flex gap-2 pt-3 border-top">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Cập nhật</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </div>

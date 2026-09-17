@@ -1,152 +1,244 @@
 @model DashboardViewModel
 @{
     ViewData["Title"] = "Tổng quan";
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+    var homNay = $"{culture.TextInfo.ToTitleCase(culture.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek))}, {DateTime.Now:dd/MM/yyyy}";
+    decimal tong = Model.TongSoPhong > 0 ? Model.TongSoPhong : 1;
+    var pctTrong = Math.Round(Model.PhongTrong * 100 / tong);
+    var pctDaCoc = Math.Round(Model.PhongDaCoc * 100 / tong);
+    var pctDangThue = Math.Round(Model.PhongDangThue * 100 / tong);
+    var pctDangSua = 100 - pctTrong - pctDaCoc - pctDangThue;
+    var chenhLech = Model.DoanhThuThangNay - Model.DoanhThuThangTruoc;
+    string trendIcon = chenhLech >= 0 ? "bi-arrow-up-right" : "bi-arrow-down-right";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Tổng quan</h3>
-    <span class="text-muted">@DateTime.Now.ToString("dddd, dd/MM/yyyy")</span>
-</div>
-
-<!-- Thẻ thống kê -->
-<div class="row g-3 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-primary bg-opacity-10 text-primary me-3"><i class="bi bi-door-open"></i></div>
-                <div>
-                    <div class="text-muted small">Tổng số phòng</div>
-                    <div class="fs-4 fw-bold">@Model.TongSoPhong</div>
-                </div>
-            </div>
-        </div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Tổng quan</h1>
+        <p class="page-subtitle">Quản lý hoạt động nhà trọ của bạn · @homNay</p>
     </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-success bg-opacity-10 text-success me-3"><i class="bi bi-cash-stack"></i></div>
-                <div>
-                    <div class="text-muted small">Doanh thu (đã thu)</div>
-                    <div class="fs-5 fw-bold">@Model.DoanhThu.ToString("N0") đ</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-danger bg-opacity-10 text-danger me-3"><i class="bi bi-exclamation-circle"></i></div>
-                <div>
-                    <div class="text-muted small">Công nợ (chưa thu)</div>
-                    <div class="fs-5 fw-bold">@Model.CongNo.ToString("N0") đ</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-warning bg-opacity-10 text-warning me-3"><i class="bi bi-people"></i></div>
-                <div>
-                    <div class="text-muted small">Người thuê đang ở</div>
-                    <div class="fs-4 fw-bold">@Model.NguoiThueDangO</div>
-                </div>
-            </div>
-        </div>
+    <div class="page-actions">
+        <a asp-controller="Invoices" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Thao tác nhanh</a>
     </div>
 </div>
 
-<div class="row g-3 mb-4">
+<!-- KPI Cards -->
+<div class="row g-3 mb-1">
     <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-info bg-opacity-10 text-info me-3"><i class="bi bi-receipt"></i></div>
-                <div>
-                    <div class="text-muted small">Hóa đơn chưa thanh toán</div>
-                    <div class="fs-4 fw-bold">@Model.HoaDonChuaThanhToan</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-success bg-opacity-10 text-success me-3"><i class="bi bi-receipt-cutoff"></i></div>
-                <div>
-                    <div class="text-muted small">Hóa đơn đã thanh toán</div>
-                    <div class="fs-4 fw-bold">@Model.HoaDonDaThanhToan</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-secondary bg-opacity-10 text-secondary me-3"><i class="bi bi-file-earmark-text"></i></div>
-                <div>
-                    <div class="text-muted small">Hợp đồng hiệu lực</div>
-                    <div class="fs-4 fw-bold">@Model.HopDongHieuLuc</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="icon bg-danger bg-opacity-10 text-danger me-3"><i class="bi bi-hourglass-split"></i></div>
-                <div>
-                    <div class="text-muted small">Hợp đồng sắp hết hạn</div>
-                    <div class="fs-4 fw-bold">@Model.HopDongSapHetHan</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Chi tiết trạng thái phòng -->
-<div class="row g-3 mb-4">
-    <div class="col-md-12">
-        <div class="card chart-card">
-            <div class="card-body d-flex flex-wrap gap-3 align-items-center">
-                <span class="fw-semibold me-2"><i class="bi bi-door-closed me-1"></i>Trạng thái phòng:</span>
-                <a asp-controller="Rooms" asp-action="Index" class="badge badge-trong p-2 text-decoration-none">Trống: @Model.PhongTrong</a>
-                <a asp-controller="Rooms" asp-action="Index" class="badge badge-dacoc p-2 text-decoration-none">Đã cọc: @Model.PhongDaCoc</a>
-                <a asp-controller="Rooms" asp-action="Index" class="badge badge-dangthue p-2 text-decoration-none">Đang thuê: @Model.PhongDangThue</a>
-                <a asp-controller="Rooms" asp-action="Index" class="badge badge-dangsua p-2 text-decoration-none">Đang sửa chữa: @Model.PhongDangSuaChua</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Biểu đồ -->
-<div class="row g-3">
-    <div class="col-lg-6">
-        <div class="card chart-card h-100">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-pie-chart me-2 text-primary"></i>Trạng thái phòng</div>
+        <div class="card kpi-card card-hover h-100">
             <div class="card-body">
-                <div class="chart-box"><canvas id="roomStatusChart"></canvas></div>
+                <div class="kpi-top">
+                    <span class="kpi-icon primary"><i class="bi bi-door-open"></i></span>
+                    <span class="kpi-label">Tổng phòng</span>
+                </div>
+                <div class="kpi-value">@Model.TongSoPhong</div>
+                <div class="kpi-sub">
+                    <span class="text-warning fw-semibold">@Model.PhongDangThue đang thuê</span><span class="sep">·</span>
+                    <span class="text-success fw-semibold">@Model.PhongTrong trống</span>
+                </div>
+                <div class="kpi-sub">
+                    <span>@Model.PhongDaCoc đã cọc</span><span class="sep">·</span>
+                    <span>@Model.PhongDangSuaChua sửa chữa</span>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="card chart-card h-100">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-graph-up me-2 text-primary"></i>Doanh thu theo tháng (12 tháng gần nhất)</div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card kpi-card card-hover h-100">
+            <div class="card-body">
+                <div class="kpi-top">
+                    <span class="kpi-icon success"><i class="bi bi-cash-stack"></i></span>
+                    <span class="kpi-label">Doanh thu (đã thu)</span>
+                </div>
+                <div class="kpi-value money">@Model.DoanhThu.ToString("N0") <span class="fs-6 fw-semibold">đ</span></div>
+                <div class="kpi-sub">
+                    @if (Model.DoanhThuThangTruoc > 0)
+                    {
+                        <span class="@(chenhLech >= 0 ? "trend-up" : "trend-down")">
+                            <i class="bi @trendIcon"></i>@(chenhLech >= 0 ? "+" : "")@chenhLech.ToString("N0") đ
+                        </span>
+                        <span>so với tháng trước</span>
+                    }
+                    else
+                    {
+                        <span>@Model.HoaDonDaThanhToan hóa đơn đã thanh toán</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card kpi-card card-hover h-100">
+            <div class="card-body">
+                <div class="kpi-top">
+                    <span class="kpi-icon danger"><i class="bi bi-exclamation-circle"></i></span>
+                    <span class="kpi-label">Công nợ (chưa thu)</span>
+                </div>
+                <div class="kpi-value money">@Model.CongNo.ToString("N0") <span class="fs-6 fw-semibold">đ</span></div>
+                <div class="kpi-sub">
+                    <a asp-controller="Invoices" asp-action="Index" asp-route-trangThai="ChuaThanhToan">@Model.HoaDonChuaThanhToan hóa đơn chưa thanh toán</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card kpi-card card-hover h-100">
+            <div class="card-body">
+                <div class="kpi-top">
+                    <span class="kpi-icon violet"><i class="bi bi-people"></i></span>
+                    <span class="kpi-label">Người thuê đang ở</span>
+                </div>
+                <div class="kpi-value">@Model.NguoiThueDangO</div>
+                <div class="kpi-sub">
+                    <a asp-controller="Contracts" asp-action="Index">@Model.HopDongHieuLuc hợp đồng hiệu lực</a><span class="sep">·</span>
+                    <span class="text-warning fw-semibold">@Model.HopDongSapHetHan sắp hết hạn</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-1">
+    <!-- Thao tác nhanh -->
+    <div class="col-xl-7">
+        <div class="card h-100">
+            <div class="card-header">Thao tác nhanh</div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-sm-6 col-lg-4">
+                        <a asp-controller="Rooms" asp-action="Create" class="qa-tile"><i class="bi bi-door-open"></i>Thêm phòng<span class="plus"><i class="bi bi-plus"></i></span></a>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <a asp-controller="Tenants" asp-action="Create" class="qa-tile"><i class="bi bi-person-plus"></i>Thêm người thuê<span class="plus"><i class="bi bi-plus"></i></span></a>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <a asp-controller="Contracts" asp-action="Create" class="qa-tile"><i class="bi bi-file-earmark-plus"></i>Lập hợp đồng<span class="plus"><i class="bi bi-plus"></i></span></a>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <a asp-controller="Utilities" asp-action="Create" class="qa-tile"><i class="bi bi-lightning-charge"></i>Ghi điện nước<span class="plus"><i class="bi bi-plus"></i></span></a>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <a asp-controller="Invoices" asp-action="Create" class="qa-tile"><i class="bi bi-receipt"></i>Lập hóa đơn<span class="plus"><i class="bi bi-plus"></i></span></a>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <a asp-controller="Invoices" asp-action="Index" class="qa-tile"><i class="bi bi-cash-coin"></i>Thanh toán hóa đơn<span class="plus"><i class="bi bi-arrow-right"></i></span></a>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <a asp-controller="MoveOut" asp-action="Index" class="qa-tile"><i class="bi bi-box-arrow-right"></i>Trả phòng<span class="plus"><i class="bi bi-arrow-right"></i></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cần xử lý -->
+    <div class="col-xl-5">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <span><i class="bi bi-bell me-2 text-danger"></i>Cần xử lý</span>
+                <a asp-controller="Invoices" asp-action="Index" asp-route-trangThai="ChuaThanhToan" class="ms-auto small fw-semibold">Xem tất cả</a>
+            </div>
+            @if (Model.CanXuLy.Any())
+            {
+                <div>
+                    @foreach (var item in Model.CanXuLy)
+                    {
+                        <div class="attention-item">
+                            <span class="attention-icon @(item.Loai == "hoadon" ? "danger" : "warning")">
+                                <i class="bi @(item.Loai == "hoadon" ? "bi-receipt" : item.Loai == "hopdong" ? "bi-file-earmark-text" : "bi-tools")"></i>
+                            </span>
+                            <div class="attention-main">
+                                <div class="attention-title">@item.MaSo · @item.TieuDe</div>
+                                <div class="attention-desc">@item.MoTa</div>
+                            </div>
+                            <div class="attention-side">
+                                @if (item.SoTien > 0)
+                                {
+                                    <div class="money fw-bold text-danger">@item.SoTien.ToString("N0") đ</div>
+                                }
+                                <a href="@item.Url" class="btn btn-secondary btn-sm mt-1">Xem</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="bi bi-check-lg"></i></div>
+                    <div class="empty-title">Mọi thứ đã ổn định</div>
+                    <p class="empty-desc">Không có hóa đơn chưa thanh toán hay hợp đồng sắp hết hạn.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-1">
+    <!-- Doanh thu 12 tháng -->
+    <div class="col-xl-7">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <span><i class="bi bi-graph-up me-2 text-primary"></i>Doanh thu 12 tháng gần nhất</span>
+                <span class="ms-auto mini-tag">đã thanh toán</span>
+            </div>
             <div class="card-body">
                 <div class="chart-box"><canvas id="revenueChart"></canvas></div>
             </div>
         </div>
     </div>
+
+    <!-- Tình trạng phòng -->
+    <div class="col-xl-5">
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-door-closed me-2 text-primary"></i>Tình trạng phòng</div>
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-center mb-3">
+                    <div class="fs-2 fw-bold">@Model.TongSoPhong <span class="fs-6 text-muted fw-normal">phòng</span></div>
+                </div>
+                <div class="status-bar">
+                    <div class="status-seg s-dangthue" style="width:@pctDangThue%"></div>
+                    <div class="status-seg s-trong" style="width:@pctTrong%"></div>
+                    <div class="status-seg s-dacoc" style="width:@pctDaCoc%"></div>
+                    <div class="status-seg s-dangsua" style="width:@pctDangSua%"></div>
+                </div>
+                <div class="status-legend justify-content-center">
+                    <a asp-controller="Rooms" asp-action="Index" asp-route-trangThai="DangThue" class="lg-item text-decoration-none">
+                        <span class="dot" style="background:var(--color-warning)"></span>Đang thuê <span class="lg-val">@Model.PhongDangThue</span>
+                    </a>
+                    <a asp-controller="Rooms" asp-action="Index" asp-route-trangThai="Trong" class="lg-item text-decoration-none">
+                        <span class="dot" style="background:var(--color-success)"></span>Trống <span class="lg-val">@Model.PhongTrong</span>
+                    </a>
+                    <a asp-controller="Rooms" asp-action="Index" asp-route-trangThai="DaCoc" class="lg-item text-decoration-none">
+                        <span class="dot" style="background:var(--color-violet)"></span>Đã cọc <span class="lg-val">@Model.PhongDaCoc</span>
+                    </a>
+                    <a asp-controller="Rooms" asp-action="Index" asp-route-trangThai="DangSuaChua" class="lg-item text-decoration-none">
+                        <span class="dot" style="background:var(--color-danger)"></span>Sửa chữa <span class="lg-val">@Model.PhongDangSuaChua</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Công nợ -->
     <div class="col-lg-6">
-        <div class="card chart-card h-100">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-graph-down me-2 text-danger"></i>Công nợ theo tháng</div>
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <span><i class="bi bi-graph-down me-2 text-danger"></i>Công nợ theo tháng</span>
+                <span class="ms-auto mini-tag">chưa thanh toán</span>
+            </div>
             <div class="card-body">
                 <div class="chart-box"><canvas id="debtChart"></canvas></div>
             </div>
         </div>
     </div>
+
+    <!-- Điện nước -->
     <div class="col-lg-6">
-        <div class="card chart-card h-100">
-            <div class="card-header bg-transparent fw-semibold"><i class="bi bi-lightning-charge me-2 text-warning"></i>Điện - nước theo tháng</div>
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-lightning-charge me-2 text-warning"></i>Điện - nước theo tháng</div>
             <div class="card-body">
                 <div class="chart-box"><canvas id="utilityChart"></canvas></div>
             </div>
@@ -158,47 +250,84 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script>
         const thangs = @Html.Raw(Json.Serialize(Model.Thangs));
-        const roomChart = @Html.Raw(Json.Serialize(Model.TrangThaiPhongChart.Select(c => new { c.Label, c.GiaTri1 })));
         const doanhThu = @Html.Raw(Json.Serialize(Model.DoanhThuChart.Select(c => c.GiaTri1)));
         const congNo = @Html.Raw(Json.Serialize(Model.CongNoChart.Select(c => c.GiaTri1)));
         const dien = @Html.Raw(Json.Serialize(Model.DienNuocChart.Select(c => c.GiaTri1)));
         const nuoc = @Html.Raw(Json.Serialize(Model.DienNuocChart.Select(c => c.GiaTri2)));
 
-        // Trạng thái phòng
-        new Chart(document.getElementById('roomStatusChart'), {
-            type: 'doughnut',
-            data: {
-                labels: roomChart.map(c => c.label),
-                datasets: [{ data: roomChart.map(c => c.giaTri1), backgroundColor: ['#198754', '#0d6efd', '#ffc107', '#dc3545'] }]
-            },
-            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
+        Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+        Chart.defaults.font.size = 11.5;
+        Chart.defaults.color = '#64748B';
 
-        // Doanh thu theo tháng
+        const tooltipCfg = {
+            backgroundColor: '#0F172A',
+            titleColor: '#F8FAFC',
+            bodyColor: '#CBD5E1',
+            padding: 10,
+            cornerRadius: 8,
+            boxPadding: 4,
+            callbacks: {
+                label: ctx => ' ' + ctx.dataset.label + ': ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.y ?? ctx.parsed) + ' đ'
+            }
+        };
+        const gridCfg = { color: '#EEF2F7', drawTicks: false };
+        const tickCfg = { padding: 6, callback: v => v >= 1000000 ? (v / 1000000) + 'tr' : v };
+
+        // Doanh thu — area chart
         new Chart(document.getElementById('revenueChart'), {
-            type: 'bar',
-            data: { labels: thangs, datasets: [{ label: 'Doanh thu (đ)', data: doanhThu, backgroundColor: '#0d6efd' }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-        });
-
-        // Công nợ theo tháng
-        new Chart(document.getElementById('debtChart'), {
             type: 'line',
-            data: { labels: thangs, datasets: [{ label: 'Công nợ (đ)', data: congNo, borderColor: '#dc3545', backgroundColor: 'rgba(220,53,69,.15)', fill: true, tension: .3 }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            data: {
+                labels: thangs,
+                datasets: [{
+                    label: 'Doanh thu', data: doanhThu, tension: .35,
+                    borderColor: '#2563EB', borderWidth: 2.5,
+                    backgroundColor: (ctx) => {
+                        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height || 260);
+                        g.addColorStop(0, 'rgba(37,99,235,.18)'); g.addColorStop(1, 'rgba(37,99,235,0)');
+                        return g;
+                    },
+                    fill: true, pointRadius: 3, pointBackgroundColor: '#2563EB', pointHoverRadius: 5
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: tooltipCfg },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: gridCfg, ticks: tickCfg } }
+            }
         });
 
-        // Điện nước theo tháng
+        // Công nợ — bar
+        new Chart(document.getElementById('debtChart'), {
+            type: 'bar',
+            data: {
+                labels: thangs,
+                datasets: [{ label: 'Công nợ', data: congNo, backgroundColor: 'rgba(220,38,38,.75)', hoverBackgroundColor: '#DC2626', borderRadius: 6, maxBarThickness: 22 }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: tooltipCfg },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: gridCfg, ticks: tickCfg } }
+            }
+        });
+
+        // Điện nước — bar đôi
         new Chart(document.getElementById('utilityChart'), {
             type: 'bar',
             data: {
                 labels: thangs,
                 datasets: [
-                    { label: 'Số điện (kW)', data: dien, backgroundColor: '#ffc107' },
-                    { label: 'Số nước (m³)', data: nuoc, backgroundColor: '#0dcaf0' }
+                    { label: 'Số điện (kW)', data: dien, backgroundColor: 'rgba(245,158,11,.8)', hoverBackgroundColor: '#F59E0B', borderRadius: 5, maxBarThickness: 16 },
+                    { label: 'Số nước (m³)', data: nuoc, backgroundColor: 'rgba(14,165,233,.8)', hoverBackgroundColor: '#0EA5E9', borderRadius: 5, maxBarThickness: 16 }
                 ]
             },
-            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle', padding: 16 } },
+                    tooltip: { backgroundColor: '#0F172A', titleColor: '#F8FAFC', bodyColor: '#CBD5E1', padding: 10, cornerRadius: 8 }
+                },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: gridCfg } }
+            }
         });
     </script>
 }

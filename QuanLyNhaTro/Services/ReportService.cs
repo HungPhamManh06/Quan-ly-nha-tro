@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhaTro.Data;
+using QuanLyNhaTro.Extensions;
 using QuanLyNhaTro.Models;
 using QuanLyNhaTro.ViewModels;
 
@@ -79,6 +80,74 @@ public class DashboardService : IDashboardService
             var inKy = readings.Where(u => u.KyGhi == ky).ToList();
             vm.DienNuocChart.Add(new ChartItemViewModel(ky, inKy.Sum(u => u.ChiSoDienMoi - u.ChiSoDienCu), inKy.Sum(u => u.ChiSoNuocMoi - u.ChiSoNuocCu)));
         }
+
+        // Xu hướng doanh thu: tháng này vs tháng trước
+        var kyNay = today.ToString("yyyy-MM");
+        var kyTruoc = today.AddMonths(-1).ToString("yyyy-MM");
+        vm.DoanhThuThangNay = vm.DoanhThuChart.FirstOrDefault(c => c.Label == kyNay)?.GiaTri1 ?? 0;
+        vm.DoanhThuThangTruoc = vm.DoanhThuChart.FirstOrDefault(c => c.Label == kyTruoc)?.GiaTri1 ?? 0;
+
+        // ===== Cần xử lý: hóa đơn quá hạn/sắp hạn + hợp đồng sắp hết hạn + phòng sửa chữa =====
+        var canXuLy = new List<AttentionItemViewModel>();
+
+        var hoaDonCanThu = await _db.Invoices.AsNoTracking().Include(i => i.Room)
+            .Where(i => i.TrangThaiThanhToan == InvoicePaymentStatus.ChuaThanhToan)
+            .OrderBy(i => i.HanThanhToan)
+            .Take(4)
+            .ToListAsync();
+        foreach (var inv in hoaDonCanThu)
+        {
+            var conHan = inv.HanThanhToan.HasValue && inv.HanThanhToan.Value.Date < today;
+            canXuLy.Add(new AttentionItemViewModel
+            {
+                Loai = "hoadon",
+                MaSo = inv.Room?.MaPhongKyHieu ?? "",
+                TieuDe = $"Hóa đơn kỳ {inv.KyHoaDon}",
+                MoTa = conHan ? $"Quá hạn thanh toán ({inv.HanThanhToan:dd/MM/yyyy})" : "Chưa thanh toán",
+                SoTien = inv.TongTien,
+                TrangThai = inv.TrangThaiThanhToan.GetDisplayName(),
+                Url = $"/Invoices/Details/{inv.MaHoaDon}"
+            });
+        }
+
+        var hopDongSapHet = await _db.Contracts.AsNoTracking().Include(c => c.Room)
+            .Where(c => c.TrangThai != ContractStatus.DaThanhLy && c.NgayKetThuc >= today && c.NgayKetThuc <= limit)
+            .OrderBy(c => c.NgayKetThuc)
+            .Take(3)
+            .ToListAsync();
+        foreach (var c in hopDongSapHet)
+        {
+            var conSoNgay = (c.NgayKetThuc.Date - today).Days;
+            canXuLy.Add(new AttentionItemViewModel
+            {
+                Loai = "hopdong",
+                MaSo = c.Room?.MaPhongKyHieu ?? "",
+                TieuDe = "Hợp đồng " + c.MaHopDongKyHieu,
+                MoTa = conSoNgay == 0 ? "Hết hạn hôm nay" : $"Hết hạn trong {conSoNgay} ngày ({c.NgayKetThuc:dd/MM/yyyy})",
+                TrangThai = "Sắp hết hạn",
+                Url = $"/Contracts/Details/{c.MaHopDong}"
+            });
+        }
+
+        var phongDangSua = await _db.Rooms.AsNoTracking()
+            .Where(r => r.TrangThai == RoomStatus.DangSuaChua)
+            .OrderBy(r => r.MaPhongKyHieu)
+            .Take(2)
+            .ToListAsync();
+        foreach (var r in phongDangSua)
+        {
+            canXuLy.Add(new AttentionItemViewModel
+            {
+                Loai = "phong",
+                MaSo = r.MaPhongKyHieu,
+                TieuDe = "Phòng " + r.MaPhongKyHieu,
+                MoTa = "Đang sửa chữa — theo dõi tiến độ",
+                TrangThai = "Đang sửa",
+                Url = $"/Rooms/Details/{r.MaPhong}"
+            });
+        }
+
+        vm.CanXuLy = canXuLy.OrderBy(x => x.Loai == "hoadon" ? 0 : x.Loai == "hopdong" ? 1 : 2).Take(6).ToList();
 
         return vm;
     }
