@@ -41,6 +41,7 @@
       - DependentUpon: liên kết file *.Designer.cs / *.resx với file form.
       ============================================================ -->
     <!-- Form -->
+    <Compile Update="Controls\BarChart.cs" SubType="Component" />
     <Compile Update="Forms\LoginForm.cs" SubType="Form" />
     <Compile Update="Forms\MainForm.cs" SubType="Form" />
     <Compile Update="Dialogs\ContractDetailDialog.cs" SubType="Form" />
