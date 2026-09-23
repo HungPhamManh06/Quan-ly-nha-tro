@@ -10,7 +10,9 @@ public class UtilityReading
     public int MaPhong { get; set; }
     public Room? Room { get; set; }
 
-    [Required, StringLength(7)]
+    // 20 ký tự (không phải 7) vì ngoài kỳ tháng "yyyy-MM" còn có kỳ chốt khi trả phòng
+    // dạng "TRAPHONG-{mã hợp đồng}" — cột nvarchar(7) cũ làm SQL Server báo lỗi truncate.
+    [Required, StringLength(20)]
     [Display(Name = "Kỳ ghi")]
     public string KyGhi { get; set; } = null!;
 

@@ -1,0 +1,293 @@
+// ------------------------------------------------------------------------------
+//  GIAO DIỆN CỦA InvoiceDialog (mở bằng Visual Studio Designer: nhấp đúp file hoặc Shift+F7).
+//
+//  ĐƠN VỊ Ở ĐÂY LÀ ĐƠN VỊ THIẾT KẾ 96 DPI — lúc chạy, app tự nhân kích thước theo
+//  tỉ lệ màn hình (100% / 125% / 150% / 200%) qua Dpi.ScaleForm. Vì vậy:
+//    • Sửa VỊ TRÍ / KÍCH THƯỚC / CHỮ / MÀU thoải mái — lúc chạy vẫn đúng.
+//    • KHÔNG đổi AutoScaleMode (phải là None), nếu không sẽ bị nhân kích thước 2 lần.
+//    • Cỡ chữ khai bằng point (pt) nên tự đúng ở mọi DPI — không cần tự nhân.
+//    • Thêm control mới: kéo từ Toolbox thả vào đây là được, app tự nhân DPI lúc chạy.
+// ------------------------------------------------------------------------------
+namespace QuanLyNhaTroDesktop.Dialogs
+{
+    partial class InvoiceDialog
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        private System.Windows.Forms.TableLayoutPanel layout;
+        private System.Windows.Forms.Label lblPhong;
+        private System.Windows.Forms.ComboBox cboRoom;
+        private System.Windows.Forms.Label lblKyYyyyMM;
+        private System.Windows.Forms.TextBox txtKy;
+        private System.Windows.Forms.Label lblTienPhongD;
+        private System.Windows.Forms.TextBox txtTienPhong;
+        private System.Windows.Forms.Label lblTienDienD;
+        private System.Windows.Forms.TextBox txtTienDien;
+        private System.Windows.Forms.Label lblTienNuocD;
+        private System.Windows.Forms.TextBox txtTienNuoc;
+        private System.Windows.Forms.Label lblTienDichVuD;
+        private System.Windows.Forms.TextBox txtTienDichVu;
+        private System.Windows.Forms.Label lblHanThanhToan;
+        private System.Windows.Forms.DateTimePicker dtpHan;
+        private System.Windows.Forms.Label lblGhiChu;
+        private System.Windows.Forms.TextBox txtGhiChu;
+        private System.Windows.Forms.Label lblChiTiet;
+        private System.Windows.Forms.Label lblTong;
+        private System.Windows.Forms.FlowLayoutPanel pnlButtons;
+        private System.Windows.Forms.Button btnOk;
+        private System.Windows.Forms.Button btnCancel;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.ClientSize = new System.Drawing.Size(545, 359);
+            this.Text = "Lập hóa đơn tháng";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = true;
+            this.ShowInTaskbar = true;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.WindowState = System.Windows.Forms.FormWindowState.Normal;
+            this.BackColor = System.Drawing.Color.FromArgb(255, 255, 255, 255);
+            this.Name = "InvoiceDialog";
+            this.SuspendLayout();
+            this.layout = new System.Windows.Forms.TableLayoutPanel();
+            this.layout.Name = "layout";
+            this.layout.Location = new System.Drawing.Point(0, 0);
+            this.layout.Size = new System.Drawing.Size(545, 359);
+            this.layout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layout.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.layout.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.layout.ColumnCount = 2;
+            this.layout.RowCount = 11;
+            this.layout.AutoScroll = true;
+            this.layout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.layout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.layout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.lblPhong = new System.Windows.Forms.Label();
+            this.lblPhong.Name = "lblPhong";
+            this.lblPhong.Location = new System.Drawing.Point(8, 6);
+            this.lblPhong.Size = new System.Drawing.Size(207, 24);
+            this.lblPhong.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblPhong.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblPhong.AutoSize = false;
+            this.lblPhong.Text = "Phòng:";
+            this.lblPhong.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cboRoom = new System.Windows.Forms.ComboBox();
+            this.cboRoom.Name = "cboRoom";
+            this.cboRoom.Location = new System.Drawing.Point(220, 8);
+            this.cboRoom.Size = new System.Drawing.Size(317, 24);
+            this.cboRoom.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.cboRoom.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.lblKyYyyyMM = new System.Windows.Forms.Label();
+            this.lblKyYyyyMM.Name = "lblKyYyyyMM";
+            this.lblKyYyyyMM.Location = new System.Drawing.Point(8, 30);
+            this.lblKyYyyyMM.Size = new System.Drawing.Size(207, 24);
+            this.lblKyYyyyMM.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblKyYyyyMM.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblKyYyyyMM.AutoSize = false;
+            this.lblKyYyyyMM.Text = "Kỳ (yyyy-MM):";
+            this.lblKyYyyyMM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtKy = new System.Windows.Forms.TextBox();
+            this.txtKy.Name = "txtKy";
+            this.txtKy.Location = new System.Drawing.Point(220, 32);
+            this.txtKy.Size = new System.Drawing.Size(317, 20);
+            this.txtKy.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.txtKy.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.txtKy.Text = "2026-09";
+            this.lblTienPhongD = new System.Windows.Forms.Label();
+            this.lblTienPhongD.Name = "lblTienPhongD";
+            this.lblTienPhongD.Location = new System.Drawing.Point(8, 54);
+            this.lblTienPhongD.Size = new System.Drawing.Size(207, 24);
+            this.lblTienPhongD.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTienPhongD.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblTienPhongD.AutoSize = false;
+            this.lblTienPhongD.Text = "Tiền phòng (đ):";
+            this.lblTienPhongD.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtTienPhong = new System.Windows.Forms.TextBox();
+            this.txtTienPhong.Name = "txtTienPhong";
+            this.txtTienPhong.Location = new System.Drawing.Point(220, 56);
+            this.txtTienPhong.Size = new System.Drawing.Size(317, 20);
+            this.txtTienPhong.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.txtTienPhong.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.txtTienPhong.Text = "1500000";
+            this.lblTienDienD = new System.Windows.Forms.Label();
+            this.lblTienDienD.Name = "lblTienDienD";
+            this.lblTienDienD.Location = new System.Drawing.Point(8, 78);
+            this.lblTienDienD.Size = new System.Drawing.Size(207, 24);
+            this.lblTienDienD.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTienDienD.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblTienDienD.AutoSize = false;
+            this.lblTienDienD.Text = "Tiền điện (đ):";
+            this.lblTienDienD.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtTienDien = new System.Windows.Forms.TextBox();
+            this.txtTienDien.Name = "txtTienDien";
+            this.txtTienDien.Location = new System.Drawing.Point(220, 80);
+            this.txtTienDien.Size = new System.Drawing.Size(317, 20);
+            this.txtTienDien.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.txtTienDien.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.txtTienDien.Text = "455000";
+            this.lblTienNuocD = new System.Windows.Forms.Label();
+            this.lblTienNuocD.Name = "lblTienNuocD";
+            this.lblTienNuocD.Location = new System.Drawing.Point(8, 102);
+            this.lblTienNuocD.Size = new System.Drawing.Size(207, 24);
+            this.lblTienNuocD.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTienNuocD.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblTienNuocD.AutoSize = false;
+            this.lblTienNuocD.Text = "Tiền nước (đ):";
+            this.lblTienNuocD.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtTienNuoc = new System.Windows.Forms.TextBox();
+            this.txtTienNuoc.Name = "txtTienNuoc";
+            this.txtTienNuoc.Location = new System.Drawing.Point(220, 104);
+            this.txtTienNuoc.Size = new System.Drawing.Size(317, 20);
+            this.txtTienNuoc.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.txtTienNuoc.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.txtTienNuoc.Text = "75000";
+            this.lblTienDichVuD = new System.Windows.Forms.Label();
+            this.lblTienDichVuD.Name = "lblTienDichVuD";
+            this.lblTienDichVuD.Location = new System.Drawing.Point(8, 126);
+            this.lblTienDichVuD.Size = new System.Drawing.Size(207, 24);
+            this.lblTienDichVuD.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTienDichVuD.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblTienDichVuD.AutoSize = false;
+            this.lblTienDichVuD.Text = "Tiền dịch vụ (đ):";
+            this.lblTienDichVuD.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtTienDichVu = new System.Windows.Forms.TextBox();
+            this.txtTienDichVu.Name = "txtTienDichVu";
+            this.txtTienDichVu.Location = new System.Drawing.Point(220, 128);
+            this.txtTienDichVu.Size = new System.Drawing.Size(317, 20);
+            this.txtTienDichVu.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.txtTienDichVu.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.txtTienDichVu.Text = "190000";
+            this.lblHanThanhToan = new System.Windows.Forms.Label();
+            this.lblHanThanhToan.Name = "lblHanThanhToan";
+            this.lblHanThanhToan.Location = new System.Drawing.Point(8, 150);
+            this.lblHanThanhToan.Size = new System.Drawing.Size(207, 24);
+            this.lblHanThanhToan.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblHanThanhToan.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblHanThanhToan.AutoSize = false;
+            this.lblHanThanhToan.Text = "Hạn thanh toán:";
+            this.lblHanThanhToan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.dtpHan = new System.Windows.Forms.DateTimePicker();
+            this.dtpHan.Name = "dtpHan";
+            this.dtpHan.Location = new System.Drawing.Point(220, 152);
+            this.dtpHan.Size = new System.Drawing.Size(317, 24);
+            this.dtpHan.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.dtpHan.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.dtpHan.Text = "10/3/2026";
+            this.dtpHan.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.lblGhiChu = new System.Windows.Forms.Label();
+            this.lblGhiChu.Name = "lblGhiChu";
+            this.lblGhiChu.Location = new System.Drawing.Point(8, 174);
+            this.lblGhiChu.Size = new System.Drawing.Size(207, 24);
+            this.lblGhiChu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblGhiChu.Margin = new System.Windows.Forms.Padding(1, 0, 4, 0);
+            this.lblGhiChu.AutoSize = false;
+            this.lblGhiChu.Text = "Ghi chú:";
+            this.lblGhiChu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtGhiChu = new System.Windows.Forms.TextBox();
+            this.txtGhiChu.Name = "txtGhiChu";
+            this.txtGhiChu.Location = new System.Drawing.Point(220, 176);
+            this.txtGhiChu.Size = new System.Drawing.Size(317, 20);
+            this.txtGhiChu.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.txtGhiChu.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.lblChiTiet = new System.Windows.Forms.Label();
+            this.lblChiTiet.Name = "lblChiTiet";
+            this.lblChiTiet.Location = new System.Drawing.Point(8, 200);
+            this.lblChiTiet.Size = new System.Drawing.Size(529, 58);
+            this.lblChiTiet.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblChiTiet.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.lblChiTiet.AutoSize = false;
+            this.lblChiTiet.Text = "Điện: 130 kW × 3,500 đ = 455,000 đ | Nước: 5 m³ × 15,000 đ = 75,000 đ\nInternet: 1 tháng × 70,000 đ = 70,000 đ; Gửi xe: 2 chiếc × 60,000 đ = 120,000 đ";
+            this.lblChiTiet.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblChiTiet.ForeColor = System.Drawing.Color.FromArgb(255, 105, 105, 105);
+            this.lblChiTiet.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lblTong = new System.Windows.Forms.Label();
+            this.lblTong.Name = "lblTong";
+            this.lblTong.Location = new System.Drawing.Point(8, 262);
+            this.lblTong.Size = new System.Drawing.Size(529, 23);
+            this.lblTong.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTong.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.lblTong.AutoSize = false;
+            this.lblTong.Text = "TỔNG TIỀN: 2,220,000 đ";
+            this.lblTong.Font = new System.Drawing.Font("Segoe UI", 11.5F, System.Drawing.FontStyle.Bold);
+            this.lblTong.ForeColor = System.Drawing.Color.FromArgb(255, 37, 99, 235);
+            this.lblTong.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.pnlButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Location = new System.Drawing.Point(8, 289);
+            this.pnlButtons.Size = new System.Drawing.Size(529, 62);
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlButtons.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.pnlButtons.AutoSize = true;
+            this.pnlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.pnlButtons.WrapContents = true;
+            this.btnOk = new System.Windows.Forms.Button();
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Location = new System.Drawing.Point(399, 0);
+            this.btnOk.Size = new System.Drawing.Size(130, 40);
+            this.btnOk.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnOk.BackColor = System.Drawing.Color.FromArgb(255, 37, 99, 235);
+            this.btnOk.Text = "Lập hóa đơn";
+            this.btnOk.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255, 255);
+            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOk.FlatAppearance.BorderSize = 0;
+            this.btnOk.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnOk.UseVisualStyleBackColor = false;
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Location = new System.Drawing.Point(261, 0);
+            this.btnCancel.Size = new System.Drawing.Size(130, 40);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnCancel.Text = "Hủy";
+            this.btnCancel.UseVisualStyleBackColor = false;
+            this.Controls.Add(this.layout);
+            this.layout.Controls.Add(this.lblPhong, 0, 0);
+            this.layout.Controls.Add(this.cboRoom, 1, 0);
+            this.layout.Controls.Add(this.lblKyYyyyMM, 0, 1);
+            this.layout.Controls.Add(this.txtKy, 1, 1);
+            this.layout.Controls.Add(this.lblTienPhongD, 0, 2);
+            this.layout.Controls.Add(this.txtTienPhong, 1, 2);
+            this.layout.Controls.Add(this.lblTienDienD, 0, 3);
+            this.layout.Controls.Add(this.txtTienDien, 1, 3);
+            this.layout.Controls.Add(this.lblTienNuocD, 0, 4);
+            this.layout.Controls.Add(this.txtTienNuoc, 1, 4);
+            this.layout.Controls.Add(this.lblTienDichVuD, 0, 5);
+            this.layout.Controls.Add(this.txtTienDichVu, 1, 5);
+            this.layout.Controls.Add(this.lblHanThanhToan, 0, 6);
+            this.layout.Controls.Add(this.dtpHan, 1, 6);
+            this.layout.Controls.Add(this.lblGhiChu, 0, 7);
+            this.layout.Controls.Add(this.txtGhiChu, 1, 7);
+            this.layout.Controls.Add(this.lblChiTiet, 0, 8);
+            this.layout.SetColumnSpan(this.lblChiTiet, 2);
+            this.layout.Controls.Add(this.lblTong, 0, 9);
+            this.layout.SetColumnSpan(this.lblTong, 2);
+            this.layout.Controls.Add(this.pnlButtons, 0, 10);
+            this.layout.SetColumnSpan(this.pnlButtons, 2);
+            this.pnlButtons.Controls.Add(this.btnOk);
+            this.pnlButtons.Controls.Add(this.btnCancel);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+    }
+}

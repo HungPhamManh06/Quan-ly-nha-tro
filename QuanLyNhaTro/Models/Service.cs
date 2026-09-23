@@ -36,7 +36,8 @@ public class ServiceUsage
     public int MaDichVu { get; set; }
     public Service? Service { get; set; }
 
-    [Required, StringLength(7)]
+    // 20 ký tự vì kỳ chốt dịch vụ cuối cùng khi trả phòng có dạng "TRAPHONG-{mã hợp đồng}"
+    [Required, StringLength(20)]
     [Display(Name = "Kỳ sử dụng")]
     public string KySuDung { get; set; } = null!;
 

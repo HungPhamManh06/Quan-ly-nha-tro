@@ -17,7 +17,8 @@ public class Invoice
     public int? MaHopDong { get; set; }
     public Contract? Contract { get; set; }
 
-    [Required, StringLength(7)]
+    // 20 ký tự cho đồng nhất với kỳ ghi điện nước (kỳ tháng "yyyy-MM" hoặc "TRAPHONG-{mã HĐ}")
+    [Required, StringLength(20)]
     [Display(Name = "Kỳ hóa đơn")]
     public string KyHoaDon { get; set; } = null!;
 

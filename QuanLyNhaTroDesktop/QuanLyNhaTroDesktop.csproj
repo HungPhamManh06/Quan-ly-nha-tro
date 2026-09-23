@@ -1,0 +1,94 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- HiDPI: form tự co giãn đúng trên màn hình đặt tỷ lệ 125% / 150% / 200% -->
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <!--
+      Visual Studio Designer hiển thị form đúng như thiết kế (96 DPI) dù màn hình đang đặt 200%.
+      Không có dòng này, Designer tab ở màn hình HDPI sẽ bị lệch/cắt chữ (đúng như banner vàng
+      "Scaling on your main display is set to 200%" mà Visual Studio hiện ra).
+      Yêu cầu: Visual Studio 2022 17.8 trở lên (project .NET 6+).
+    -->
+    <ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
+    <!-- Cho phép chạy trên runtime .NET 10 nếu máy chỉ cài .NET 10 -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Tái sử dụng toàn bộ nghiệp vụ: Models, Services, Data (DbContext, DbInitializer) -->
+    <ProjectReference Include="..\QuanLyNhaTro\QuanLyNhaTro.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ============================================================
+      KHAI BÁO CHO VISUAL STUDIO DESIGNER (quan trọng!)
+      Template WinForms chuẩn của VS có phần này; project được chuyển đổi
+      từ bản web nên bị thiếu. Không có nó, VS mở tab [Design] nhưng vẽ
+      form TRỐNG MẶC ĐỊNH (không nạp InitializeComponent của mình).
+      - SubType="Form" / "UserControl": cho biết loại file.
+      - DependentUpon: liên kết file *.Designer.cs / *.resx với file form.
+      ============================================================ -->
+    <!-- Form -->
+    <Compile Update="Forms\LoginForm.cs" SubType="Form" />
+    <Compile Update="Forms\MainForm.cs" SubType="Form" />
+    <Compile Update="Dialogs\ContractDetailDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\ContractDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\InfoDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\InvoiceDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\MoveOutDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\NoteDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\PaymentDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\RenewContractDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\RoomDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\ServiceDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\ServiceUsageDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\TenantDialog.cs" SubType="Form" />
+    <Compile Update="Dialogs\UtilityDialog.cs" SubType="Form" />
+    <!-- UserControl (panel đặt trong tab của cửa sổ chính) -->
+    <Compile Update="Forms\DashboardPanel.cs" SubType="UserControl" />
+    <Compile Update="Forms\ReportPanel.cs" SubType="UserControl" />
+    <Compile Update="Forms\ListTabPanel.cs" SubType="UserControl" />
+    <!-- File giao diện (*.Designer.cs) liên kết với file form tương ứng -->
+    <Compile Update="Forms\LoginForm.Designer.cs" DependentUpon="LoginForm.cs" />
+    <Compile Update="Forms\MainForm.Designer.cs" DependentUpon="MainForm.cs" />
+    <Compile Update="Forms\DashboardPanel.Designer.cs" DependentUpon="DashboardPanel.cs" />
+    <Compile Update="Forms\ReportPanel.Designer.cs" DependentUpon="ReportPanel.cs" />
+    <Compile Update="Forms\ListTabPanel.Designer.cs" DependentUpon="ListTabPanel.cs" />
+    <Compile Update="Dialogs\ContractDetailDialog.Designer.cs" DependentUpon="ContractDetailDialog.cs" />
+    <Compile Update="Dialogs\ContractDialog.Designer.cs" DependentUpon="ContractDialog.cs" />
+    <Compile Update="Dialogs\InfoDialog.Designer.cs" DependentUpon="InfoDialog.cs" />
+    <Compile Update="Dialogs\InvoiceDialog.Designer.cs" DependentUpon="InvoiceDialog.cs" />
+    <Compile Update="Dialogs\MoveOutDialog.Designer.cs" DependentUpon="MoveOutDialog.cs" />
+    <Compile Update="Dialogs\NoteDialog.Designer.cs" DependentUpon="NoteDialog.cs" />
+    <Compile Update="Dialogs\PaymentDialog.Designer.cs" DependentUpon="PaymentDialog.cs" />
+    <Compile Update="Dialogs\RenewContractDialog.Designer.cs" DependentUpon="RenewContractDialog.cs" />
+    <Compile Update="Dialogs\RoomDialog.Designer.cs" DependentUpon="RoomDialog.cs" />
+    <Compile Update="Dialogs\ServiceDialog.Designer.cs" DependentUpon="ServiceDialog.cs" />
+    <Compile Update="Dialogs\ServiceUsageDialog.Designer.cs" DependentUpon="ServiceUsageDialog.cs" />
+    <Compile Update="Dialogs\TenantDialog.Designer.cs" DependentUpon="TenantDialog.cs" />
+    <Compile Update="Dialogs\UtilityDialog.Designer.cs" DependentUpon="UtilityDialog.cs" />
+    <!-- File tài nguyên (*.resx) -->
+    <EmbeddedResource Update="Forms\LoginForm.resx" DependentUpon="LoginForm.cs" />
+    <EmbeddedResource Update="Forms\MainForm.resx" DependentUpon="MainForm.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Đảm bảo appsettings.json được copy ra thư mục chạy (bin/...) -->
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
